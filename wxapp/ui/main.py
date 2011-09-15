@@ -117,7 +117,11 @@ class MainWindow(wx.Frame):
 
     def OnRefreshResults(self, e):
         self.segHelper.setText(self.notebook.editorPanel.GetValue())
-        self.segHelper.SummarizeResults()
+
+        prog = wx.ProgressDialog(parent=self, title="Progress", message="parsing Results", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
+        self.segHelper.SummarizeResults(updatefunction=prog.Update)
+        prog.Destroy()
+
         #st = wx.StaticText(self.notebook.resultPanel, -1, self.segHelper.summary, (10, 10))
         self.notebook.summaryPanel.SetValue(self.segHelper.summary)
         self.notebook.resultPanel.SetValue(self.segHelper.results)
@@ -178,7 +182,11 @@ class MainWindow(wx.Frame):
         d.ShowModal()
         d.Destroy()
         if self.config.dirtyDicts:
-            self.segHelper.LoadData(self.config)
+            prog = wx.ProgressDialog(parent=None, title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
+            self.segHelper.LoadData(self.config, updatefunction=prog.Update)
+            prog.Destroy()
+
+            #self.segHelper.LoadData(self.config, updatefunction=wx.ProgressDialog(title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH).Update)
             self.config.dirtyDicts = False
 
         self.notebook.messagePanel.SetValue(self.segHelper.getMessages())
@@ -205,4 +213,3 @@ class MainWindow(wx.Frame):
         self.SetMenuBar(mainmenu)
 
         self.notebook = NoteBook1(self, 1)        
-

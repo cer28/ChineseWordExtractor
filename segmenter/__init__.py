@@ -3,7 +3,7 @@ Copyright 2011 by Chad Redman <chad at zhtoolkit.com>
 License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 '''
 
-import re
+import re,os
 
 
 
@@ -99,11 +99,13 @@ class Dictionary:
                 print 'Warning: Invalid EDICT entry in line %d of %s: "%s"' % (lineno, self.filename, line)
             return None
 
-    def readCedictFile(self,filename):
+    def readCedictFile(self,filename,updatefunction):
         '''
         The CEDICT format is traditional simplified [pinyin] english
         throws: IOError
         '''
+        filebytes = os.path.getsize(filename)
+        progresspct = 0
         try:
             fh = open(filename)  #throws IOError
         except IOError, e:
@@ -113,6 +115,11 @@ class Dictionary:
             lineno = 0
             for line in fh.read().splitlines():
                 lineno += 1
+                # This doesn't exactly equal 100% due to unicode vs. byte comparisons
+                progresspct += len(line)*100.0/filebytes
+                if updatefunction and progresspct > 0:
+                    updatefunction(progresspct)
+
                 #if lineno > 100: break  #TODO temp debugging delete
                 word = self.readCedictLine(line, lineno)
                 if word != None:
@@ -166,7 +173,7 @@ class Dictionary:
         finally:
             fh.close()
 
-    def __init__(self, filename, format, character=None, dataType = 'words', description=None, tag=None, verbose=False):
+    def __init__(self, filename, format, character=None, dataType = 'words', description=None, tag=None, verbose=False, updatefunction=None):
         '''
         Constructor
         '''
@@ -191,7 +198,7 @@ class Dictionary:
         self.verbose = verbose
 
         if (format == 'cedict'):
-            self.readCedictFile(filename)
+            self.readCedictFile(filename, updatefunction)
         elif (format == 'edict'):
             if not character in self.characterTypes:
                 self.messages.append("Dictionary format 'edict' requires to define traditional/simplified")
@@ -579,7 +586,7 @@ class Segmenter:
         
         return
     
-    def segment(self, text):
+    def segment(self, text, updatefunction=None):
 
         if self.tokenMatchType == 'cjk':
             tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, self.sectionBreakChar))
@@ -596,6 +603,8 @@ class Segmenter:
         length = len(text)
 
         while idx < length:
+            if updatefunction:
+                updatefunction(idx * 100 / length)
             m = re.match(notTokenPattern, text[idx:])
             if m:
                 results.addLexical(m.group(0), idx, isCJK=False)

@@ -16,7 +16,7 @@ class PrefsDialog(wx.Dialog):
         panel = wx.Panel(self, -1)
         vbox = wx.BoxSizer(wx.VERTICAL) 
 
-        label = wx.StaticText(self, -1, "Select dictionary:")
+        label = wx.StaticText(self, -1, "Select dictionary(ies):")
         vbox.Add(label, 0, wx.ALIGN_LEFT|wx.ALL)
         self.dictList = self.GetFileItems( os.path.join(self.config.appDir, 'dict') )
         self.dictListBox = wx.ListBox(self, 60, (100, 50), (200, 120), self.dictList, wx.LB_EXTENDED|wx.LB_HSCROLL)
@@ -61,10 +61,10 @@ class PrefsDialog(wx.Dialog):
             self.config.setDicts(dictSelected)
             
             #%% Temp for debugging
-            import string
-            d = wx.MessageDialog(self, "(debug) will reload dictionaries: %s" % string.join(dictSelected, ", "), "", wx.OK)
-            d.ShowModal()
-            d.Destroy()
+            #import string
+            #d = wx.MessageDialog(self, "(debug) will reload dictionaries: %s" % string.join(dictSelected, ", "), "", wx.OK)
+            #d.ShowModal()
+            #d.Destroy()
 
 
         self.config.save()

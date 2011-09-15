@@ -27,13 +27,13 @@ class SegmenterHelper:
         self.messages = []
         self.runningDir = runningDir
 
-    def LoadData(self, config):
+    def LoadData(self, config, updatefunction=None):
         self.dicts = []
         #for dictname in ['dict\\cedict_ts.u8', 'dict\\Harry Potter.u8']:
         #for dictname in ['dict\\cedict_ts.u8']:
         for dictname in config['dictionaries']:
             self.addMessage("Loading dictionary %s ..." % dictname)
-            dict = segmenter.Dictionary( os.path.join(config.appDir, 'dict', dictname), format='cedict', verbose=True)
+            dict = segmenter.Dictionary( os.path.join(config.appDir, 'dict', dictname), format='cedict', verbose=True, updatefunction=updatefunction)
 
             if dict.messages != None:
                 for elem in dict.messages:
@@ -95,14 +95,14 @@ class SegmenterHelper:
         self.text = text
         return self.text
 
-    def SummarizeResults(self):
+    def SummarizeResults(self, updatefunction=None):
         self.summary = ''
         self.results = ''
 
         self.addMessage("Analyzing text ...")
 
         self.summary += "Length of text = %d" % len(self.text) + "\n"
-        results = self.seg.segment(self.text)
+        results = self.seg.segment(self.text, updatefunction)
         self.summary += "\n\nResults.tokens (%d)" % len(results.tokens) + "\n"
 
 #        for lex in results.tokens:
