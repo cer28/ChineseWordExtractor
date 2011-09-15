@@ -26,7 +26,9 @@ def run(segHelper):
        unicode(os.path.abspath(opts.config), sys.getfilesystemencoding()))
     config.appDir = segHelper.runningDir
 
-    segHelper.LoadData(config)
+    prog = wx.ProgressDialog(parent=None, title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
+    segHelper.LoadData(config, updatefunction=prog.Update)
+    prog.Destroy()
 
     #loads main window
     ui.importAll()
