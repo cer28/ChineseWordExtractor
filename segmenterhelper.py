@@ -11,6 +11,7 @@ import os
 class SegmenterHelper:
     #from segmenter import Dictionary, Statistics, Segmenter
 
+
     def addMessage(self, text):
         self.messages.append(unicode(text, "utf-8"))
 
@@ -26,11 +27,19 @@ class SegmenterHelper:
         self.summary = ''
         self.messages = []
         self.runningDir = runningDir
+        self.dicts = []
+        self.filterwords = []
+
 
     def LoadData(self, config, updatefunction=None):
+
+        if config['charset']:
+            charset = config['charset']
+        else:
+            charset = 'simplified'
+
         self.dicts = []
-        #for dictname in ['dict\\cedict_ts.u8', 'dict\\Harry Potter.u8']:
-        #for dictname in ['dict\\cedict_ts.u8']:
+
         for dictname in config['dictionaries']:
             self.addMessage("Loading dictionary %s ..." % dictname)
             dict = segmenter.Dictionary( os.path.join(config.appDir, 'dict', dictname), format='cedict', verbose=True, updatefunction=updatefunction)
@@ -46,16 +55,22 @@ class SegmenterHelper:
             self.dicts.append(dict)
 
         self.stats=[]
-        self.stats.append(segmenter.Statistics(os.path.join(config.appDir, 'data/HSK Levels.U8'), 'tab', 'hsk_level', 'simplified'))
-        self.stats.append(segmenter.Statistics(os.path.join(config.appDir, 'data', 'Freq per Million.U8'), 'tab', 'frequency_per_million', 'simplified'))
-        self.stats.append(segmenter.Statistics(os.path.join(config.appDir, 'data', 'simp Chengyu num sources.u8'), 'tab', 'chengyu_num_sources', 'simplified'))
 
-        self.filterwords = []
-        #self.LoadKnownWords('filter/simp-Chad Words.u8')
+        self.LoadStatisticsFile(config, 'HSK_Levels.U8', 'hsk_level', charset)
+        self.LoadStatisticsFile(config, 'Freq_per_Million.U8', 'frequency_per_million', charset)
+        self.LoadStatisticsFile(config, 'Chengyu_num_sources.u8', 'chengyu_num_sources', charset)
         
-        self.seg = segmenter.Segmenter('simplified', self.dicts, self.stats)
+        self.seg = segmenter.Segmenter(charset, self.dicts, self.stats)
 
-    def LoadKnownWords(self, filename):
+
+    def LoadKnownWords(self, config, updatefunction=None):
+        self.filterwords = []
+        for filtername in config['filters']:
+            print "Loading filter %s" % filtername
+            self.LoadFilterFile(os.path.join(config.appDir, 'filter', filtername))
+
+    def LoadFilterFile(self, filename):
+        import re
         fh = open(filename)  #throws IOError
         lineno = 0
         try:
@@ -69,6 +84,13 @@ class SegmenterHelper:
             fh.close()
         
         return lineno
+
+    def LoadStatisticsFile(self, config, filename, keyword, charset):
+        fullpath = os.path.join(config.appDir, 'data', charset, filename)
+        try:
+            self.stats.append(segmenter.Statistics(fullpath, 'tab', keyword, charset))
+        except IOError as (errno, strerror):
+            self.addMessage("Failed to load data file %s: %s" % (fullpath, strerror))
 
     def ReadFiles(self, filelist):
         # Autodetect the encoding, so that the user doesn't need to worry about utf8 vs. utf16, little endian, etc
