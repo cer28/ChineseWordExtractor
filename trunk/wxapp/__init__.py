@@ -30,6 +30,8 @@ def run(segHelper):
     segHelper.LoadData(config, updatefunction=prog.Update)
     prog.Destroy()
 
+    segHelper.LoadKnownWords(config)
+
     #loads main window
     ui.importAll()
     frame = ui.main.MainWindow(None, -1, "Chinese Word Extractor", size=(750,500))

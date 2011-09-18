@@ -13,65 +13,38 @@ import version
 # non-standard menus
 ID_REFRESH_RESULTS = 101
 
+## Constants for identifying control keys and classes of keys:
+WXK_CTRL_A = ord('A')
 
 
-#    Method OnInit()    
-#        ConnectAny(wxEVT_KEY_DOWN, OnKeyDown)
-
-
-class MyAboutBox(wx.Dialog):
-    text = '''
-<html>
-<body>
-<h1>Chinese Word Extractor</h1>
-<p>Version %s</p>
-
-<p>Chinese Word Extractor is licensed under the terms of the
-<a href="http://www.gnu.org/copyleft/gpl.html">GPL v.3.0</a><br/>
-
-<p>(c) Copyright 2011 Chad Redman. All rights reserved.</p>
-
-<p>Go to the <a href="http://www.zhtoolkit.com/posts/tools/chinese-word-extractor/">project page</a></p>
-
-<p><wxp module="wx" class="Button">
-    <param name="label" value="Okay">
-    <param name="id"    value="ID_OK">
-</wxp></p>
-
-</body>
-</html>
-'''
-
-    def __init__(self, parent):
-        wx.Dialog.__init__(self, parent, -1, 'About Chinese Word Extractor',)
-        html = wx.html.HtmlWindow(self, -1, size=(420, -1))
-        if "gtk2" in wx.PlatformInfo:
-            html.SetStandardFonts()
-        txt = self.text % (version.APP_VERSION)
-        html.SetPage(txt)
-        btn = html.FindWindowById(wx.ID_OK)
-        ir = html.GetInternalRepresentation()
-        html.SetSize( (ir.GetWidth()+25, ir.GetHeight()+25) )
-        self.SetClientSize(html.GetSize())
-        self.CentreOnParent(wx.BOTH)
-
-
-class EditorPanel1(wx.TextCtrl):
+class SelectableTextCtrl(wx.TextCtrl):                                
     def __init__(self, parent, *args, **kwargs):
         wx.TextCtrl.__init__(self, parent, *args, **kwargs)
+        self.Bind(wx.EVT_KEY_DOWN, self.OnKeyDown)
+
+    def OnKeyDown(self,event=None):
+        if event.ControlDown() and event.GetKeyCode() == WXK_CTRL_A:
+            self.SetSelection(-1, -1)
+        else:
+            event.Skip()
+
+class EditorPanel1(SelectableTextCtrl):
+    def __init__(self, parent, *args, **kwargs):
+        SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
+
         
-class ResultPanel1(wx.TextCtrl):
+class ResultPanel1(SelectableTextCtrl):
     def __init__(self, parent, *args, **kwargs):
-        wx.TextCtrl.__init__(self, parent, *args, **kwargs)
+        SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
 
 
-class SummaryPanel1(wx.TextCtrl):
+class SummaryPanel1(SelectableTextCtrl):
     def __init__(self, parent, *args, **kwargs):
-        wx.TextCtrl.__init__(self, parent, *args, **kwargs)
+        SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
 
-class MessagePanel1(wx.TextCtrl):
+class MessagePanel1(SelectableTextCtrl):
     def __init__(self, parent, *args, **kwargs):
-        wx.TextCtrl.__init__(self, parent, *args, **kwargs)
+        SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
 
 
 
@@ -90,25 +63,23 @@ class NoteBook1(wx.Notebook):
                              )
 
         self.editorPanel = EditorPanel1(self, 1, style=wx.TE_MULTILINE)
+        #the first paste into a TextCtrl truncates at 30k characters on Windows. The following
+        #line, while setting a hard-limit on the text size, is a quick way to fix
+        #the 30k bug
+        self.editorPanel.SetMaxLength(1e9)
         self.AddPage(self.editorPanel, 'Source')
 
         self.summaryPanel = SummaryPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
         self.AddPage(self.summaryPanel, 'Summary', )
 
         self.resultPanel = ResultPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
-        self.AddPage(self.resultPanel, 'Analysis', )
+        self.resultPanel.SetMaxLength(1e9)
+        self.AddPage(self.resultPanel, 'Results', )
 
         self.messagePanel = ResultPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
+        self.messagePanel.SetMaxLength(1e9)
         self.AddPage(self.messagePanel, 'Messages', )
 
-        #TODO subclass textctl and program in ctrl-A
-        wx.EVT_SET_FOCUS(self.resultPanel, self.OnTextSetFocus)
-
-    def OnTextSetFocus(self, evt):
-        wx.CallAfter(self.SelectAll)
-
-    def SelectAll(self):
-        self.resultPanel.SetSelection(-1, -1)
 
 class MainWindow(wx.Frame):
 
@@ -150,12 +121,17 @@ class MainWindow(wx.Frame):
 
         # Then we call wx.AboutBox giving it that info object
         wx.AboutBox(info)
+
+    def OnDocumentation(self, e):
+        import webbrowser
+        webbrowser.open("http://www.zhtoolkit.com/posts/") 
+    
     def OnOpen(self, e):
         """ Open a file """
 
         self.dirname = self.config['currentdir']
         #dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Text Files (*.txt)|*.txt|UTF-8 text files (*.txt, *.u8)|*.u8;*.txt|All files (*)|*.*", style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
-        dlg = wx.FileDialog(self, "Choose one or more files", self.dirname, "", "text files (*.txt, *.u8, *.gb)|*.txt;*.u8;*.gb|All files (*)|*.*", style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
+        dlg = wx.FileDialog(self, "Choose one or more files", self.dirname, "", "text files (*.txt, *.u8, *.gb, *.big5)|*.txt;*.u8;*.gb;*.big5|HTML files (*.htm, *.html)|*.htm;*.html|All files (*)|*.*", style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
         if dlg.ShowModal() == wx.ID_OK:
             #self.filename = dlg.GetFilename()
             #self.dirname = dlg.GetDirectory()
@@ -189,6 +165,12 @@ class MainWindow(wx.Frame):
             #self.segHelper.LoadData(self.config, updatefunction=wx.ProgressDialog(title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH).Update)
             self.config.dirtyDicts = False
 
+        if self.config.dirtyFilters:
+            self.segHelper.LoadKnownWords(self.config)
+
+            #self.segHelper.LoadData(self.config, updatefunction=wx.ProgressDialog(title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH).Update)
+            self.config.dirtyDicts = False
+
         self.notebook.messagePanel.SetValue(self.segHelper.getMessages())
 
 
@@ -196,20 +178,25 @@ class MainWindow(wx.Frame):
         wx.Frame.__init__(self, parent, *args, **kwargs)
 
         mainmenu = wx.MenuBar()                  # Create menu bar.
-        menu = wx.Menu()
+        filemenu = wx.Menu()
+        helpmenu = wx.Menu()
 
-        item = menu.Append(wx.ID_ABOUT, '&About', 'Information about this program')
-        self.Bind(wx.EVT_MENU, self.OnAbout, item)  # Create and assign a menu event.
-        item = menu.Append(wx.ID_OPEN, '&Open', 'Open a file')
+        item = filemenu.Append(wx.ID_OPEN, '&Open', 'Open a file')
         self.Bind(wx.EVT_MENU, self.OnOpen, item)  # Create and assign a menu event.
-        item = menu.Append(ID_REFRESH_RESULTS, '&Analyze', 'Analyze Results')
+        item = filemenu.Append(ID_REFRESH_RESULTS, '&Analyze', 'Analyze Results')
         self.Bind(wx.EVT_MENU, self.OnRefreshResults, item)  # Create and assign a menu event.
-        item = menu.Append(wx.ID_PREFERENCES, 'P&references', 'Configure application settings')
+        item = filemenu.Append(wx.ID_PREFERENCES, 'P&references', 'Configure application settings')
         self.Bind(wx.EVT_MENU, self.OnPreferences, item)  # Create and assign a menu event.
-        item = menu.Append(wx.ID_EXIT, 'E&xit', 'Terminate the program')
+        item = filemenu.Append(wx.ID_EXIT, 'E&xit', 'Terminate the program')
         self.Bind(wx.EVT_MENU, self.OnExit, item)  # Create and assign a menu event.
 
-        mainmenu.Append(menu, '&File')
+        item = helpmenu.Append(wx.ID_HELP_CONTENTS, '&Documentation', 'Launches a web browser to view online instructions')
+        self.Bind(wx.EVT_MENU, self.OnDocumentation, item)  # Create and assign a menu event.
+        item = helpmenu.Append(wx.ID_ABOUT, '&About', 'Information about this program')
+        self.Bind(wx.EVT_MENU, self.OnAbout, item)  # Create and assign a menu event.
+
+        mainmenu.Append(filemenu, '&File')
+        mainmenu.Append(helpmenu, '&Help')
         self.SetMenuBar(mainmenu)
 
         self.notebook = NoteBook1(self, 1)        

@@ -13,6 +13,7 @@ class Config(dict):
     appDir = None
 
     dirtyDicts = False
+    dirtyFilters = False
 
     def __init__(self, configPath):
         # TODO platform-independent
@@ -28,7 +29,8 @@ class Config(dict):
             #'dicts': {"cedict_ts.u8" : "cedict"},
             'filters': [],
             'currentdir': "samples",
-            'dictionaries': ['cedict_ts.u8']
+            'dictionaries': ['cedict_ts.u8'],
+            'charset': 'simplified',
             }
 
         for (k,v) in fields.items():
@@ -78,3 +80,6 @@ class Config(dict):
 
     def setDicts(self, dict_ar):
         self["dictionaries"] = dict_ar
+
+    def setFilters(self, filter_ar):
+        self["filters"] = filter_ar

@@ -11,12 +11,12 @@ class PrefsDialog(wx.Dialog):
         
         self.config = config
 
-        wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title="Preferences", size=(250,210))
+        wx.Dialog.__init__(self, parent, id=wx.ID_ANY, title="Preferences", size=(440,400))
 
         panel = wx.Panel(self, -1)
         vbox = wx.BoxSizer(wx.VERTICAL) 
 
-        label = wx.StaticText(self, -1, "Select dictionary(ies):")
+        label = wx.StaticText(self, -1, "Select dictionaries (ctrl-click for multiple):")
         vbox.Add(label, 0, wx.ALIGN_LEFT|wx.ALL)
         self.dictList = self.GetFileItems( os.path.join(self.config.appDir, 'dict') )
         self.dictListBox = wx.ListBox(self, 60, (100, 50), (200, 120), self.dictList, wx.LB_EXTENDED|wx.LB_HSCROLL)
@@ -30,7 +30,33 @@ class PrefsDialog(wx.Dialog):
                 self.dictListBox.SetSelection(idx, True)
 
         vbox.Add(self.dictListBox, 0, wx.ALIGN_LEFT|wx.ALL)
+
+
+
+        label = wx.StaticText(self, -1, "Select filtered word file(s)")
+        vbox.Add(label, 0, wx.ALIGN_LEFT|wx.ALL)
+        self.filterList = self.GetFileItems( os.path.join(self.config.appDir, 'filter') )
+        self.filterListBox = wx.ListBox(self, 60, (100, 50), (200, 120), self.filterList, wx.LB_MULTIPLE|wx.LB_HSCROLL)  #wx.LB_EXTENDED
+
+        # pre-select current options
+        for idx, val in enumerate(self.filterList):
+            if val in self.config["filters"]:
+                self.filterListBox.SetSelection(idx, True)
+
+        vbox.Add(self.filterListBox, 0, wx.ALIGN_LEFT|wx.ALL)
+
+        self.charsetbox = wx.RadioBox(self, -1, 'Character set', choices = ['simplified', 'traditional'])
+        self.charsetbox.SetStringSelection(config['charset'])
         
+        #self.charset_simp = wx.RadioButton(self, -1, 'Simplified', style = wx.RB_GROUP)
+        #self.charset_trad = wx.RadioButton ( self, -1, 'Traditional')
+        #self.charset = wx.StaticText ( self, -1, 'Use characters' ) 
+        #vbox.Add (self.charset)
+        #vbox.Add (self.charset_simp)
+        #vbox.Add (self.charset_trad)
+        vbox.Add(self.charsetbox)
+
+
         hbox = wx.BoxSizer(wx.HORIZONTAL)
         okButton = wx.Button(self, -1, 'Ok')
         self.Bind(wx.EVT_BUTTON, self.OnOk, okButton)
@@ -66,6 +92,21 @@ class PrefsDialog(wx.Dialog):
             #d.ShowModal()
             #d.Destroy()
 
+
+        filterIdxSelected = self.filterListBox.GetSelections() 
+        filterSelected = []
+        for idx in filterIdxSelected:
+            filterSelected.append(self.filterList[idx])
+
+        if self.config["filters"] != filterSelected:
+            #need to reload dictionaries. This should be in an subscribed event
+            self.config.dirtyFilters = True
+            self.config.setFilters(filterSelected)
+
+        newcharset = self.charsetbox.GetStringSelection().encode('iso-8859-1')  # without the encode, converting to unicode yields "decoding Unicode is not supported"
+        if self.config["charset"] != newcharset:
+            self.config["charset"] = newcharset
+            self.config.dirtyDicts = True
 
         self.config.save()
 
