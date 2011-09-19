@@ -233,9 +233,7 @@ class Statistics:
            Charsets traditional or simplified means that the columns are expression value
            TODO: make statistics type a list so that multiple fields can be defined 
         '''
-#        if not statisticType in self.statisticsTypes:
-#            raise Error("Unknown statisticType %s" % statisticType)
-        self.statisticType = statisticType
+        self.statisticType = 'Undefined'
 
         if not character in self.characterSets:
             raise Error("Unknown character type %s" % character)
@@ -255,6 +253,10 @@ class Statistics:
                 curline +=1
                 line = unicode(line, "utf-8")
                 if formatType == 'tab':
+                    m = re.match('^# Heading: ', line)
+                    if m:
+                        self.statisticType = line[m.end():]
+                        continue
                     if re.match('\\s*#', line):
                         # These are comment lines
                         continue
@@ -456,7 +458,7 @@ class Segmenter:
         def isSectionBreak(self):
             return True
 
-    def __init__(self, character, dictArray, statArray, method='simpleLongestMatch', tokenMatchType='cjk', dictionaryOperationType='replace', verbose=False):
+    def __init__(self, character, dictArray, statDict, method='simpleLongestMatch', tokenMatchType='cjk', dictionaryOperationType='replace', verbose=False):
         '''
         Constructor
         Note that the Segmenter knows whether to allow just CJK or CJK + A-Z,
@@ -477,8 +479,8 @@ class Segmenter:
         else:
             self.tokenMatchType = tokenMatchType
 
-        self.dictionaries = dictArray;
-        self.statistics = statArray;
+        self.dictionaries = dictArray
+        self.statistics = statDict
         self.verbose = verbose
 
         if not dictionaryOperationType in self.dictionaryOperationTypes:    # why does this say formatTypes is not defined
@@ -512,11 +514,11 @@ class Segmenter:
 
     def _buildStatistics(self):
         #TODO verify character set matches
-        for statfile in self.statistics:
-            for stat in statfile.words:
+        for statItem in self.statistics.values():
+            for stat in statItem.words:
                 word = self.getWord(stat.word)
                 if word:
-                    word.addStatistic(statfile.statisticType, stat.value)
+                    word.addStatistic(statItem.statisticType, stat.value)
 
 
 
