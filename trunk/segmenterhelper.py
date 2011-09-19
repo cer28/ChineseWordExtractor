@@ -54,11 +54,15 @@ class SegmenterHelper:
 
             self.dicts.append(dict)
 
-        self.stats=[]
+        self.stats={}
 
-        self.LoadStatisticsFile(config, 'HSK_Levels.U8', 'hsk_level', charset)
-        self.LoadStatisticsFile(config, 'Freq_per_Million.U8', 'frequency_per_million', charset)
-        self.LoadStatisticsFile(config, 'Chengyu_num_sources.u8', 'chengyu_num_sources', charset)
+        for statfile in self.GetFileItems( os.path.join(config.appDir, 'data', charset) ):
+            if statfile[0] != "_":
+                self.LoadStatisticsFile(config, statfile, 'TO_BE_REPLACED', charset)
+
+#        self.LoadStatisticsFile(config, 'HSK_Levels.U8', 'hsk_level', charset)
+#        self.LoadStatisticsFile(config, 'Freq_per_Million.U8', 'frequency_per_million', charset)
+#        self.LoadStatisticsFile(config, 'Chengyu_num_sources.u8', 'chengyu_num_sources', charset)
         
         self.seg = segmenter.Segmenter(charset, self.dicts, self.stats)
 
@@ -88,7 +92,10 @@ class SegmenterHelper:
     def LoadStatisticsFile(self, config, filename, keyword, charset):
         fullpath = os.path.join(config.appDir, 'data', charset, filename)
         try:
-            self.stats.append(segmenter.Statistics(fullpath, 'tab', keyword, charset))
+            #self.stats.append(segmenter.Statistics(fullpath, 'tab', keyword, charset))
+            stat = segmenter.Statistics(fullpath, 'tab', keyword, charset)
+            self.stats[stat.statisticType] = stat
+            print "DEBUG: added stat %s" % stat.statisticType
         except IOError as (errno, strerror):
             self.addMessage("Failed to load data file %s: %s" % (fullpath, strerror))
 
@@ -120,6 +127,8 @@ class SegmenterHelper:
     def SummarizeResults(self, updatefunction=None):
         self.summary = ''
         self.results = ''
+        customstats = self.stats.items()
+        customstats.sort()
 
         self.addMessage("Analyzing text ...")
 
@@ -130,7 +139,25 @@ class SegmenterHelper:
 #        for lex in results.tokens:
 #            sys.stdout.write(lex.text)
 
-        self.results +=  '\t'.join( ("Word num.", "Running total words", "text", "num. occur.", "1st occur.", "HSK level", "Freq per Mil", "num. chengyu src", "traditional", "simplified", "pinyin", "english", "sample sentence") ) + "\n"
+        self.results +=  '\t'.join(
+                [
+                 "Word num.",
+                 "Running total words",
+                 "text",
+                 "num. occur.",
+                 "1st occur."
+                ] +
+                 #"HSK level",
+                 #"Freq per Mil",
+                 #"num. chengyu src",
+                [ y[0] for y in customstats] +
+                [
+                 "traditional",
+                 "simplified",
+                 "pinyin",
+                 "english",
+                 "sample sentence"
+                ])  + "\n"
 
         wordctGross = 0
         wordctNet = 0
@@ -141,18 +168,21 @@ class SegmenterHelper:
             word = results.words[lex.text]
             if word == None:
                 self.results +=  '\t'.join(
-                            (
+                            [
                              '',
                              '',
                              lex.text,
                              str(len(lex.indexes)),
-                             str(lex.indexes[0]),
+                             str(lex.indexes[0])
+                            ] + 
+                            [ '' for y in customstats] +
+                            [
                              '',
                              '',
                              '',
                              'Unknown',
                              ''
-                            )
+                            ]
                         ) + "\n"
             elif word.isSectionBreak():
                 self.results +=  "-------------------\t%s" % (lex.text) + "\n"
@@ -164,18 +194,19 @@ class SegmenterHelper:
                     wordUniqueNet += 1
                     wordctNet += len(lex.indexes)
                     self.results +=  '\t'.join(
-                            (
+                            [
                              str(wordUniqueNet),
                              str(wordctNet),
                              lex.text,
                              str(len(lex.indexes)),
-                             str(lex.indexes[0]),
-                             word.getStatistic('hsk_level'),
-                             word.getStatistic('frequency_per_million'),
-                             word.getStatistic('chengyu_num_sources'),
+                             str(lex.indexes[0])
+                            ] +
+                            [ word.getStatistic(y[0]) for y in customstats] +
+                            [
                              word.getDefinition(),
-                             results.findFirstSentence(lex)
-                            )
+                            results.findFirstSentence(lex)
+                            ]
+                            
                         ) + "\n"
                     #self.results +=  '\t'.join( (str(wordUniqueNet), str(wordctNet))) + "\t"
                     #self.results +=  '\t'.join( (str(wordUniqueNet), lex.text)) + "\t"
@@ -187,3 +218,16 @@ class SegmenterHelper:
         self.summary += "Total count of filtered Chinese words: %d" % wordctNet + "\n"
         self.summary += "\nTotal count of unique Chinese words: %d" % wordUniqueGross + "\n"
         self.summary += "Total count of unique filtered Chinese words: %d" % wordUniqueNet + "\n"
+
+    def GetFileItems(self, directory):
+        import stat
+
+        choices = []
+        for filename in os.listdir(directory):
+            try:
+                st = os.stat(os.path.join(directory, filename))
+            except os.error:
+                continue
+            if stat.S_ISREG(st.st_mode):
+                choices.append(filename)
+        return choices
