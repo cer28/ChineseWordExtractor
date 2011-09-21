@@ -84,8 +84,7 @@ class SegmenterHelper:
         for statfile in self.config['extracolumns']:
             self.LoadStatisticsFile(self.config, statfile, charset)
 
-        self.addMessage("")
-
+        self.seg.setStatistics(self.stats)
 
     def LoadFilterFile(self, filename):
         import re
@@ -142,8 +141,6 @@ class SegmenterHelper:
     def SummarizeResults(self, updatefunction=None):
         self.summary = ''
         self.results = ''
-        customstats = self.stats.items()
-        customstats.sort()
 
         self.addMessage("Analyzing text ...")
 
@@ -162,10 +159,6 @@ class SegmenterHelper:
                  "num. occur.",
                  "1st occur."
                 ] +
-                 #"HSK level",
-                 #"Freq per Mil",
-                 #"num. chengyu src",
-                #[ y[0] for y in customstats] +
                 [ self.statFiles[filename] for filename in self.config["extracolumns"] ] +
                 [
                  "traditional",
