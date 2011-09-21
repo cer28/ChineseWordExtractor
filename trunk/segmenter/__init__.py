@@ -234,7 +234,7 @@ class Statistics:
            Charsets traditional or simplified means that the columns are expression value
            TODO: make statistics type a list so that multiple fields can be defined 
         '''
-        self.statisticType = 'Undefined'
+        self.statisticType = filename
 
         if not character in self.characterSets:
             raise Error("Unknown character type %s" % character)
@@ -270,6 +270,8 @@ class Statistics:
         finally:
             fh.close()
 
+    def __repr__(self):
+        return "<Statistics> Filename '%s', heading '%s', %d entries" % (self.filename, self.statisticType, len(self.words)) 
 
 
 class SegmenterResults:
@@ -492,6 +494,10 @@ class Segmenter:
 
         self.words = {};
         self._buildWordList();
+        self._buildStatistics();
+
+    def setStatistics(self, statDict):
+        self.statistics = statDict
         self._buildStatistics();
 
     def _buildWordList(self):

@@ -1,8 +1,8 @@
-# Heading: HSK (old) Level
+# Heading: HSK Level (pre-2010)
 #
 # Source: http://hskflashcards.com/download.php
 #
-# In the original list, different senses of a word can appear in in either the same list or a different lists.
+# In the original list, different senses of a word can appear in either the same or a different level.
 # This list below has all duplicate words removed, and the second column represents the lowest level in which
 # a word appears.
 #
@@ -5672,9 +5672,12 @@
 定向	4
 定性	4
 定义	4
-订购/定购	4
-订货/定货	4
-订阅/定阅	4
+订购	4
+定购	4
+订货	4
+定货	4
+订阅	4
+定阅	4
 丢人	4
 丢失	4
 东奔西走	4
@@ -6981,7 +6984,8 @@
 贫乏	4
 贫困	4
 贫民	4
-品/纪念品	4
+品	4
+纪念品	4
 品尝	4
 品行	4
 聘	4
