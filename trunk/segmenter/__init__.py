@@ -60,7 +60,7 @@ class Dictionary:
     def getWordCount(self):
         return len(self.words)
 
-    def readCedictLine(self,line, lineno):
+    def readCedictLine(self, line, lineno):
         if re.match('\\s*#', line):
             #A comment line
             return None
@@ -76,7 +76,8 @@ class Dictionary:
             return DictionaryWord(m.group(1),m.group(2),m.group(3),m.group(4))
         else:
             if self.verbose:
-                self.messages.append('Warning: Invalid CEDICT entry in line %d of %s: "%s"' % (lineno, self.filename, line))
+                self.messages.append('Warning: Invalid CEDICT entry in line %d of %s: "%s"' % (lineno, self.filename, unicode(line, "utf-8")))
+                
             return None
 
     def readEdictLine(self, line, lineno, character):
@@ -104,11 +105,11 @@ class Dictionary:
         The CEDICT format is traditional simplified [pinyin] english
         throws: IOError
         '''
-        filebytes = os.path.getsize(filename)
         progresspct = 0
         try:
+            filebytes = os.path.getsize(filename)
             fh = open(filename)  #throws IOError
-        except IOError, e:
+        except (WindowsError, IOError), e:
             print "Warning: Failed to load dictionary %s: %s" % (filename, e.message)
             return
         try:
@@ -228,7 +229,7 @@ class Statistics:
             self.word = word
             self.value = value
 
-    def __init__(self, filename, formatType, statisticType, character):
+    def __init__(self, filename, formatType, character):
         '''note: charset 'combined' here means 3 columns: trad-expression simp-expression value
            Charsets traditional or simplified means that the columns are expression value
            TODO: make statistics type a list so that multiple fields can be defined 

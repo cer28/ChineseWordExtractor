@@ -159,17 +159,20 @@ class MainWindow(wx.Frame):
         d.Destroy()
         if self.config.dirtyDicts:
             prog = wx.ProgressDialog(parent=None, title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
-            self.segHelper.LoadData(self.config, updatefunction=prog.Update)
+            self.segHelper.LoadData(updatefunction=prog.Update)
             prog.Destroy()
 
             #self.segHelper.LoadData(self.config, updatefunction=wx.ProgressDialog(title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH).Update)
             self.config.dirtyDicts = False
 
         if self.config.dirtyFilters:
-            self.segHelper.LoadKnownWords(self.config)
-
+            self.segHelper.LoadKnownWords()
             #self.segHelper.LoadData(self.config, updatefunction=wx.ProgressDialog(title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH).Update)
-            self.config.dirtyDicts = False
+            self.config.dirtyFilters = False
+
+        if self.config.dirtyExtraCols:
+            self.segHelper.LoadExtraColumns()
+            self.config.dirtyExtraCols = False
 
         self.notebook.messagePanel.SetValue(self.segHelper.getMessages())
 

@@ -13,7 +13,16 @@ class SegmenterHelper:
 
 
     def addMessage(self, text):
-        self.messages.append(unicode(text, "utf-8"))
+        try:
+            self.messages.append(unicode(text, "utf-8"))
+            #self.messages.append(text)
+        except TypeError, e:
+            try:
+                self.messages.append(text)
+            except:
+                print "Failed to log error message for %s" % text
+                self.messages.append("Failed to log error message! Run in console to see details")
+
 
     def getMessages(self):
         return "\n".join(self.messages)
@@ -29,10 +38,15 @@ class SegmenterHelper:
         self.runningDir = runningDir
         self.dicts = []
         self.filterwords = []
+        self.config = None
+        self.stats = {}  # a mapping between filenames and data list
+        self.statFiles = {}  # a mapping between filenames and heading
 
 
-    def LoadData(self, config, updatefunction=None):
+    def LoadData(self, updatefunction=None):
+        'Called when first starting the program, or when preference change sets dirtyDicts'
 
+        config = self.config
         if config['charset']:
             charset = config['charset']
         else:
@@ -42,7 +56,8 @@ class SegmenterHelper:
 
         for dictname in config['dictionaries']:
             self.addMessage("Loading dictionary %s ..." % dictname)
-            dict = segmenter.Dictionary( os.path.join(config.appDir, 'dict', dictname), format='cedict', verbose=True, updatefunction=updatefunction)
+            dictFile = os.path.join(config.appDir, 'dict', dictname)
+            dict = segmenter.Dictionary(dictFile, format='cedict', verbose=True, updatefunction=updatefunction)
 
             if dict.messages != None:
                 for elem in dict.messages:
@@ -50,28 +65,27 @@ class SegmenterHelper:
                 # add a blank line
 
             self.addMessage("Loaded dictionary %s, %d words" % (dictname, dict.getWordCount()))
-            self.addMessage("")
-
             self.dicts.append(dict)
 
-        self.stats={}
-
-        for statfile in self.GetFileItems( os.path.join(config.appDir, 'data', charset) ):
-            if statfile[0] != "_":
-                self.LoadStatisticsFile(config, statfile, 'TO_BE_REPLACED', charset)
-
-#        self.LoadStatisticsFile(config, 'HSK_Levels.U8', 'hsk_level', charset)
-#        self.LoadStatisticsFile(config, 'Freq_per_Million.U8', 'frequency_per_million', charset)
-#        self.LoadStatisticsFile(config, 'Chengyu_num_sources.u8', 'chengyu_num_sources', charset)
-        
         self.seg = segmenter.Segmenter(charset, self.dicts, self.stats)
+        self.addMessage("")
 
 
-    def LoadKnownWords(self, config, updatefunction=None):
+    def LoadKnownWords(self, updatefunction=None):
         self.filterwords = []
-        for filtername in config['filters']:
-            print "Loading filter %s" % filtername
-            self.LoadFilterFile(os.path.join(config.appDir, 'filter', filtername))
+        for filtername in self.config['filters']:
+            self.LoadFilterFile(os.path.join(self.config.appDir, 'filter', filtername))
+            self.addMessage("Loaded filtered word file %s" % filtername)
+        self.addMessage("")
+
+    def LoadExtraColumns(self):
+        charset = self.config['charset']
+        self.stats={}
+        for statfile in self.config['extracolumns']:
+            self.LoadStatisticsFile(self.config, statfile, charset)
+
+        self.addMessage("")
+
 
     def LoadFilterFile(self, filename):
         import re
@@ -89,13 +103,14 @@ class SegmenterHelper:
         
         return lineno
 
-    def LoadStatisticsFile(self, config, filename, keyword, charset):
+    def LoadStatisticsFile(self, config, filename, charset):
         fullpath = os.path.join(config.appDir, 'data', charset, filename)
         try:
             #self.stats.append(segmenter.Statistics(fullpath, 'tab', keyword, charset))
-            stat = segmenter.Statistics(fullpath, 'tab', keyword, charset)
-            self.stats[stat.statisticType] = stat
-            print "DEBUG: added stat %s" % stat.statisticType
+            stat = segmenter.Statistics(fullpath, 'tab', charset)
+            self.stats[filename] = stat
+            self.statFiles[filename] = stat.statisticType
+            self.addMessage("Loaded extra column data file %s/%s" % (charset, filename))
         except IOError as (errno, strerror):
             self.addMessage("Failed to load data file %s: %s" % (fullpath, strerror))
 
@@ -150,7 +165,8 @@ class SegmenterHelper:
                  #"HSK level",
                  #"Freq per Mil",
                  #"num. chengyu src",
-                [ y[0] for y in customstats] +
+                #[ y[0] for y in customstats] +
+                [ self.statFiles[filename] for filename in self.config["extracolumns"] ] +
                 [
                  "traditional",
                  "simplified",
@@ -175,7 +191,7 @@ class SegmenterHelper:
                              str(len(lex.indexes)),
                              str(lex.indexes[0])
                             ] + 
-                            [ '' for y in customstats] +
+                            [ '' for y in self.config["extracolumns"]] +
                             [
                              '',
                              '',
@@ -201,7 +217,7 @@ class SegmenterHelper:
                              str(len(lex.indexes)),
                              str(lex.indexes[0])
                             ] +
-                            [ word.getStatistic(y[0]) for y in customstats] +
+                            [ word.getStatistic(self.statFiles[y]) for y in self.config["extracolumns"]] +
                             [
                              word.getDefinition(),
                             results.findFirstSentence(lex)
