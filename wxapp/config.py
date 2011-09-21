@@ -14,6 +14,7 @@ class Config(dict):
 
     dirtyDicts = False
     dirtyFilters = False
+    dirtyExtraCols = False
 
     def __init__(self, configPath):
         # TODO platform-independent
@@ -28,6 +29,7 @@ class Config(dict):
         fields = {
             #'dicts': {"cedict_ts.u8" : "cedict"},
             'filters': [],
+            'extracolumns': [],
             'currentdir': "samples",
             'dictionaries': ['cedict_ts.u8'],
             'charset': 'simplified',
@@ -79,7 +81,11 @@ class Config(dict):
         self.setDefaults()
 
     def setDicts(self, dict_ar):
+        # TODO move setting of dirtyDict here instead of caller
         self["dictionaries"] = dict_ar
 
     def setFilters(self, filter_ar):
         self["filters"] = filter_ar
+
+    def setExtraColumns(self, extracols_ar):
+        self["extracolumns"] = extracols_ar

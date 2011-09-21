@@ -27,10 +27,12 @@ def run(segHelper):
     config.appDir = segHelper.runningDir
 
     prog = wx.ProgressDialog(parent=None, title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
-    segHelper.LoadData(config, updatefunction=prog.Update)
+    segHelper.config = config
+    segHelper.LoadData(updatefunction=prog.Update)
     prog.Destroy()
 
-    segHelper.LoadKnownWords(config)
+    segHelper.LoadKnownWords()
+    segHelper.LoadExtraColumns()
 
     #loads main window
     ui.importAll()
