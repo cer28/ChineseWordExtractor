@@ -16,7 +16,7 @@ class SegmenterHelper:
         try:
             self.messages.append(unicode(text, "utf-8"))
             #self.messages.append(text)
-        except TypeError, e:
+        except TypeError:
             try:
                 self.messages.append(text)
             except:
