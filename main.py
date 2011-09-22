@@ -3,9 +3,7 @@ Copyright 2011 by Chad Redman <chad at zhtoolkit.com>
 License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 '''
 
-import wx
-import segmenter
-import os, re, sys
+import os, sys
 
 from segmenterhelper import SegmenterHelper
 

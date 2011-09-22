@@ -3,7 +3,7 @@ Copyright 2011 by Chad Redman <chad at zhtoolkit.com>
 License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 '''
 
-import os, sys, cPickle, locale, types, shutil, time
+import os, cPickle
 import errno
 
 class Config(dict):

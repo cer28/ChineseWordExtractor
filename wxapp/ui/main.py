@@ -4,9 +4,7 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 '''
 
 import wx
-import wx.html
 from wx.lib.wordwrap import wordwrap
-import os
 
 import version
 
@@ -103,14 +101,14 @@ class MainWindow(wx.Frame):
         # First we create and fill the info object
         info = wx.AboutDialogInfo()
         info.Name = "Chinese Word Extractor"
-        info.Version = version.APP_VERSION
+        info.Version = "v. %s" % version.APP_VERSION
         info.Copyright = "(C) 2011 Chad Redman"
         info.Description = wordwrap(
             "This is a tool to extract vocabulary from Chinese text, summarizing "
             "the unique words with word count, pinyin, English definition, and other useful "
             "statistics.",
             500, wx.ClientDC(self))
-        info.WebSite = ("http://www.zhtoolkit.com/posts/tools/chinese-word-extractor/", "Project home page")
+        info.WebSite = ("http://www.zhtoolkit.com/apps/Chinese Word Extractor", "Project home page")
         #info.Developers = [ "Joe Programmer",
         #                    "Jane Coder",
         #                    "Vippy the Mascot" ]
@@ -124,7 +122,7 @@ class MainWindow(wx.Frame):
 
     def OnDocumentation(self, e):
         import webbrowser
-        webbrowser.open("http://www.zhtoolkit.com/posts/") 
+        webbrowser.open("http://www.zhtoolkit.com/apps/Chinese Word Extractor/help.html") 
     
     def OnOpen(self, e):
         """ Open a file """

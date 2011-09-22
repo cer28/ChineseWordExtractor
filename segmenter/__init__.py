@@ -184,7 +184,7 @@ class Dictionary:
         self.filename = filename
         if not format in self.formatTypes:    # why does this say formatTypes is not defined
             self.messages.append("Unknown dictionary format %s" % format)
-            raise Error("Unknown dictionary format %s" % format)
+            raise Exception("Unknown dictionary format %s" % format)
         else:
             self.format = format
 
@@ -203,13 +203,13 @@ class Dictionary:
         elif (format == 'edict'):
             if not character in self.characterTypes:
                 self.messages.append("Dictionary format 'edict' requires to define traditional/simplified")
-                raise Error("Dictionary format 'edict' requires to define traditional/simplified")
+                raise Exception("Dictionary format 'edict' requires to define traditional/simplified")
             self.readEdictFile(filename, character)
         elif (format == 'tab'):
             self.readTabFile(filename)
         else :
             self.messages.append("Unknown dictionary format '%s'" % format)
-            raise Error("Unknown dictionary format '%s'" % format)
+            raise Exception("Unknown dictionary format '%s'" % format)
 
     def __str__(self):
         return 'Dictionary %s (%s), %d Entries' % (self.description, self.filename, len(self.words))
@@ -237,11 +237,11 @@ class Statistics:
         self.statisticType = filename
 
         if not character in self.characterSets:
-            raise Error("Unknown character type %s" % character)
+            raise Exception("Unknown character type %s" % character)
         self.character = character
 
         if not formatType in self.formatTypes:
-            raise Error("Unknown formatType %s" % formatType)
+            raise Exception("Unknown formatType %s" % formatType)
         self.formatType = formatType
         
         self.filename = filename
@@ -468,17 +468,17 @@ class Segmenter:
         but the dictionary has it's own separate regexp for what is a valid character string.
         '''
         if not character in self.characterSets:
-            raise Error("Unknown character type '%s'" % character)
+            raise Exception("Unknown character type '%s'" % character)
         else:
             self.character = character
 
         if not method in self.segmentationMethods:    # why does this say formatTypes is not defined
-            raise Error("Unknown segmentation method %s" % method)
+            raise Exception("Unknown segmentation method %s" % method)
         else:
             self.segmentationMethod = method
 
         if not tokenMatchType in self.tokenMatchTypes:    # why does this say formatTypes is not defined
-            raise Error("Unknown token match type %s" % tokenMatchType)
+            raise Exception("Unknown token match type %s" % tokenMatchType)
         else:
             self.tokenMatchType = tokenMatchType
 
@@ -487,7 +487,7 @@ class Segmenter:
         self.verbose = verbose
 
         if not dictionaryOperationType in self.dictionaryOperationTypes:    # why does this say formatTypes is not defined
-            raise Error("Unknown dictionaryOperationType %s" % dictionaryOperationType)
+            raise Exception("Unknown dictionaryOperationType %s" % dictionaryOperationType)
         else:
             self.dictionaryOperationType = dictionaryOperationType
 
