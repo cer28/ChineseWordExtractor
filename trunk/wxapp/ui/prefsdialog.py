@@ -140,14 +140,6 @@ class PrefsDialog ( wx.Dialog ):
 
     def _RefreshExtraColumnListBox(self, charset):
         extraColList = self.GetFileItems(os.path.join(self.config.appDir, 'data', charset))
-        #for idx in range(self.extraColListBox.Number(), 0):
-        #    print "Deleting item %d" % idx
-        #    self.extraColListBox.Delete(idx)         
-
-        # pre-select current options
-        #for idx, val in enumerate(extraColList):
-        #    if val in self.config["extracolumns"]:
-        #        self.extraColListBox.SetSelection(idx, True)
         self.extraColListBox.SetItems(extraColList)
 
     def OnCancel(self, event):
@@ -188,8 +180,6 @@ class PrefsDialog ( wx.Dialog ):
 
         if self.config["extracolumns"] != extracolSelected:
             #need to reload dictionaries. This should be in an subscribed event
-            print self.config["extracolumns"]
-            print extracolSelected
             self.config.dirtyExtraCols = True
             self.config.setExtraColumns(extracolSelected)
 
