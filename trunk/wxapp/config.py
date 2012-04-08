@@ -8,7 +8,6 @@ import errno
 
 class Config(dict):
 
-    configFileName = "config.db"
     configFileFullPath = None
     appDir = None
 
@@ -16,10 +15,10 @@ class Config(dict):
     dirtyFilters = False
     dirtyExtraCols = False
 
-    def __init__(self, configPath):
+    def __init__(self, configFileFullPath):
         # TODO platform-independent
-        self.configPath = configPath
-        self.configFileFullPath = os.path.join(self.configPath, self.configFileName)
+        #self.configFileFullPath = os.path.join(self.configPath, self.configFileName)
+        self.configFileFullPath = configFileFullPath
 
 #        self.makeWorkingDir()
         self.load()
@@ -31,7 +30,7 @@ class Config(dict):
             'filters': [],
             'extracolumns': [],
             'currentdir': "samples",
-            'dictionaries': ['cedict_ts.u8'],
+            'dictionaries': ['cedict_ts-merged-refs.u8'],
             'charset': 'simplified',
             }
 
@@ -51,33 +50,46 @@ class Config(dict):
 #                pass
 
 
-    def save(self):
-        # create directory if it doesn't exist
-        try:
-            os.mkdir(self.configPath, 0700)
+    def _makedir(self, dirpath):
+        try:            
+            #os.makedirs(dirpath)
+            #os.mkdir(dirpath, 0700)
+            os.mkdir(dirpath)
         except OSError, e:
             if e.errno != errno.EEXIST:
                 raise
-
-        # write to a temp file
-        from tempfile import mkstemp
-        (fd, tmpname) = mkstemp(dir=self.configPath)
-        tmpfile = os.fdopen(fd, 'w')
-        cPickle.dump(dict(self), tmpfile)
-        tmpfile.close()
-        # the write was successful, delete config file (if exists) and rename
-        if os.path.exists(self.configFileFullPath):
-            os.unlink(self.configFileFullPath)
-        os.rename(tmpname, self.configFileFullPath)
+        
+    def save(self):
+        # create directory if it doesn't exist
+        
+        configDir = os.path.dirname(self.configFileFullPath)
+        try:            
+            self._makedir(configDir)
+            # write to a temp file
+            from tempfile import mkstemp
+            (fd, tmpname) = mkstemp(dir=configDir)
+            tmpfile = os.fdopen(fd, 'w')
+            cPickle.dump(dict(self), tmpfile)
+            tmpfile.close()
+            # the write was successful, delete config file (if exists) and rename
+            if os.path.exists(self.configFileFullPath):
+                os.unlink(self.configFileFullPath)
+            os.rename(tmpname, self.configFileFullPath)
+            return (True, None)
+        except Exception, e:
+            print "Error saving preferences file %s (%s)" % (self.configFileFullPath, e)
+            return (False, e)
 
 
     def load(self):
         try:
             f = open(self.configFileFullPath)
             self.update(cPickle.load(f))
-        except (IOError, EOFError):
+        except (IOError, EOFError), ex:
             # Corrupted format
-            pass
+            print "DEBUG: config.load(): unable to read file %s: (%s)" % (self.configFileFullPath, ex)
+            print "DEBUG:   Using the defaults instead"
+
         self.setDefaults()
 
     def setDicts(self, dict_ar):

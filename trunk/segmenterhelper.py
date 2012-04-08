@@ -88,7 +88,12 @@ class SegmenterHelper:
 
     def LoadFilterFile(self, filename):
         import re
-        fh = open(filename)  #throws IOError
+        try:
+            fh = open(filename)  #throws IOError
+        except Exception, ex:
+            self.addMessage("**Error: Failed to load filter file %s: (%s)" % (filename, ex))
+            return 0
+
         lineno = 0
         try:
             for line in fh.read().splitlines():
@@ -111,7 +116,7 @@ class SegmenterHelper:
             self.statFiles[filename] = stat.statisticType
             self.addMessage("Loaded extra column data file %s/%s" % (charset, filename))
         except IOError as (errno, strerror):
-            self.addMessage("Failed to load data file %s: %s" % (fullpath, strerror))
+            self.addMessage("**Failed to load data file %s: %s" % (fullpath, strerror))
 
     def ReadFiles(self, filelist):
         # Autodetect the encoding, so that the user doesn't need to worry about utf8 vs. utf16, little endian, etc

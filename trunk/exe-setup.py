@@ -14,7 +14,7 @@ setup(
     windows = [
         {
             "script": "main.py",
-            "icon_resources": [(1, "application-icon.ico")]
+            "icon_resources": [(0, "application-icon.ico")]
         }
     ],
 )
