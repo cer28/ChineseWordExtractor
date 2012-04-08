@@ -5,23 +5,30 @@ Powershell -command "Remove-Item stage -Recurse"
 cd stage
 
 
-xcopy data    dist\data    /E /I
-xcopy dict    dist\dict    /E /I
-xcopy filter  dist\filter  /E /I
-xcopy samples dist\samples /E /I
-
 copy ..\Microsoft.VC90.CRT.manifest .\
 copy ..\msvcm90.dll .\
 copy ..\msvcp90.dll .\
 copy ..\msvcr90.dll .\
 
-copy ..\Microsoft.VC90.CRT.manifest dist\
-copy ..\msvcm90.dll dist\
-copy ..\msvcp90.dll dist\
-copy ..\msvcr90.dll dist\
-copy application-icon.ico dist\
 
 python exe-setup.py py2exe
+
+copy ..\Microsoft.VC90.CRT.manifest dist
+copy ..\msvcm90.dll dist
+copy ..\msvcp90.dll dist
+copy ..\msvcr90.dll dist
+copy application-icon.ico dist
+
+@REM Thanks for quietly ignoring these in a script, but work fine from the console
+@REM xcopy data    dist\data    /E /I
+@REM xcopy dict    dist\dict    /E /I
+@REM xcopy filter  dist\filter  /E /I
+@REM xcopy samples dist\samples /E /I
+
+Powershell -command "Copy-Item -Recurse data dist\data"
+Powershell -command "Copy-Item -Recurse dict dist\dict"
+Powershell -command "Copy-Item -Recurse filter dist\filter"
+Powershell -command "Copy-Item -Recurse samples dist\samples"
 
 chdir dist
 del "Chinese Word Extractor.exe"
