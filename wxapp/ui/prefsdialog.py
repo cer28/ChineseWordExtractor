@@ -190,7 +190,13 @@ class PrefsDialog ( wx.Dialog ):
             self.config.dirtyExtraCols = True   # The data needs to be reloaded from the new files, even if the filenames have not changed
             self.config.setExtraColumns(extracolSelected)
 
-        self.config.save()
+        (saveStatus, ex) = self.config.save()
+        if not saveStatus:
+            print "Error in prefsDialog.OnOk calling config.save: %s" % ex
+            dlg = wx.MessageDialog(self, 'Unable to save configuration file. Error was (%s)' % ex, 'Error', wx.OK|wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            
 
 
         self.Destroy()
@@ -200,7 +206,17 @@ class PrefsDialog ( wx.Dialog ):
         import stat
 
         choices = []
-        for filename in os.listdir(directory):
+        filenames = []
+        try:
+            filenames = os.listdir(directory)
+        except Exception, e:
+            print "Error in GetFileItems: %s" % e
+            dlg = wx.MessageDialog(self, 'Unable to read files in directory %s (%s)' % (directory, e), 'Error', wx.OK|wx.ICON_EXCLAMATION)
+            dlg.ShowModal()
+            dlg.Destroy()
+            return choices
+        
+        for filename in filenames:
             if filename[0] != "_":
                 try:
                     st = os.stat(os.path.join(directory, filename))
