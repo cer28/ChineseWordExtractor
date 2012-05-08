@@ -15,11 +15,11 @@ def run(segHelper):
     # parse args
     parser = optparse.OptionParser()
     parser.usage = "%prog"
-    parser.add_option("-c", "--config", help="path to config dir",
+    parser.add_option("-c", "--config", help="path to config file",
                       default=os.path.expanduser("~/Chinese Word Extractor/config.db"))
     parser.add_option("-i", "--inputfile", help="Path to input file")
     parser.add_option("-o", "--outputfile", help="When using an inputfile parameter, print summary output to a file (use '-' as filename to print to the console), and do not show an application window")
-    parser.add_option("--appdir", help="Base directory of the application. It mustd contain subdirectories dict, data, and filter",
+    parser.add_option("--appdir", help="Base directory of the application. It must contain subdirectories dict, data, and filter",
                       default=segHelper.runningDir)
     (opts, args) = parser.parse_args(sys.argv[1:])
 
