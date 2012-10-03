@@ -195,7 +195,7 @@ class PrefsDialog ( wx.Dialog ):
             #print "Error in prefsDialog.OnOk calling config.save: %s" % ex
             dlg = wx.MessageDialog(self, 'Unable to save configuration file. Error was (%s)' % ex, 'Error', wx.OK|wx.ICON_EXCLAMATION)
             dlg.ShowModal()
-                dlg.Destroy()
+            dlg.Destroy()
             
 
 
