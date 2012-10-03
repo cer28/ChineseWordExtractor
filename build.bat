@@ -13,11 +13,11 @@ copy ..\msvcr90.dll .\
 
 python exe-setup.py py2exe
 
-copy ..\Microsoft.VC90.CRT.manifest dist
-copy ..\msvcm90.dll dist
-copy ..\msvcp90.dll dist
-copy ..\msvcr90.dll dist
-copy application-icon.ico dist
+@REM copy ..\Microsoft.VC90.CRT.manifest dist
+@REM copy ..\msvcm90.dll dist
+@REM copy ..\msvcp90.dll dist
+@REM copy ..\msvcr90.dll dist
+@REM copy application-icon.ico dist
 
 @REM Thanks for quietly ignoring these in a script, but work fine from the console
 @REM xcopy data    dist\data    /E /I

@@ -97,7 +97,7 @@ class Dictionary:
                 return DictionaryWord(None, m.group(1), m.group(2), m.group(3))
         else:
             if self.verbose:
-                print 'Warning: Invalid EDICT entry in line %d of %s: "%s"' % (lineno, self.filename, line)
+                self.messages.append('Warning: Invalid EDICT entry in line %d of %s: "%s"' % (lineno, self.filename, unicode(line, "utf-8")))
             return None
 
     def readCedictFile(self,filename,updatefunction):
@@ -110,7 +110,7 @@ class Dictionary:
             filebytes = os.path.getsize(filename)
             fh = open(filename)  #throws IOError
         except (WindowsError, IOError), e:
-            print "Warning: Failed to load dictionary %s: %s" % (filename, e.message)
+            self.messages.append("Warning: Failed to load dictionary %s: %s" % (filename, e.message))
             return
         try:
             lineno = 0
@@ -168,7 +168,7 @@ class Dictionary:
                         self.words.append(word)
                 else:
                     if self.verbose:
-                        print 'Warning: Invalid tab entry in line %d of %s: "%s"' % (lineno, self.filename, line)
+                        self.messages.append('Warning: Invalid tab entry in line %d of %s: "%s"' % (lineno, self.filename, unicode(line, "utf-8")))
 
                 lineno += 1
         finally:
@@ -265,7 +265,7 @@ class Statistics:
                     if len(ar) == 2:
                         self.words.append(self.Statistic(ar[0], ar[1]))
                     else:
-                        print "Warning: statistic in %s, line %d is missing a value" % (self.filename, curline)
+                        self.messages.append("Warning: statistic in %s, line %d is missing a value" % (self.filename, curline))
                     
         finally:
             fh.close()
@@ -439,6 +439,7 @@ class Segmenter:
                     trad.append(d.traditional)
                 if d.pinyin not in pinyin:
                     pinyin.append(d.pinyin)
+                if d.english not in english:
                     english.append(d.english)
 
     
@@ -602,7 +603,8 @@ class Segmenter:
         elif self.tokenMatchType == 'cjk_plus_az':
             tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkFullwidthLatin, self.sectionBreakChar))
         else:
-            print "Unknown token match type %s" % self.tokenMatchType
+            #TODO add a self.messages and display it in the log tab
+            #print "Unknown token match type %s" % self.tokenMatchType
             return None
 
         notTokenPattern = "[^%s]+" % tokenPattern

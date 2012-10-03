@@ -8,6 +8,16 @@
 # Number of unique characters: 9933
 # Total number of characters in the corpus: 193504018
 #
+# Note: These characters are listed but are compatibility characters or otherwise outside the range of Unihan CJK:
+# 裏	0.016
+# 秊	0.0052
+#
+# Note2: These characters are defined in Unihan, but the nonstandard pinyin is messing up something in the dictionary compiling:
+# 唔	7.7	[ń; ńg; wu2] /hold in mouth; bite; (Cant.) not, negation/
+# 呒	0.42	[ḿ]	/unclear; an expletive/
+#
+# Note3: There are some traditional-only characters mixed in here, mostly above the 4,000th rank
+#
 #
 #term	freq_per_million	Individual raw frequency	Cumulative frequency in percentile	Pinyin	English translation (CEDICT Dec 2005)
 的	40943

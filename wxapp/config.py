@@ -72,23 +72,25 @@ class Config(dict):
             cPickle.dump(dict(self), tmpfile)
             tmpfile.close()
             # the write was successful, delete config file (if exists) and rename
-            if os.path.exists(self.configFileFullPath):
+            if os.path.isfile(self.configFileFullPath):
                 os.unlink(self.configFileFullPath)
             os.rename(tmpname, self.configFileFullPath)
             return (True, None)
         except Exception, e:
-            print "Error saving preferences file %s (%s)" % (self.configFileFullPath, e)
+            #print u"Error saving preferences file %s (%s)" % (self.configFileFullPath, e)
             return (False, e)
 
 
     def load(self):
-        try:
-            f = open(self.configFileFullPath)
-            self.update(cPickle.load(f))
-        except (IOError, EOFError), ex:
-            # Corrupted format
-            print "DEBUG: config.load(): unable to read file %s: (%s)" % (self.configFileFullPath, ex)
-            print "DEBUG:   Using the defaults instead"
+        if os.path.isfile(self.configFileFullPath):
+            try:
+                f = open(self.configFileFullPath)
+                self.update(cPickle.load(f))
+            except (IOError, EOFError):
+                # Corrupted format
+                #print u"DEBUG: config.load(): unable to read file %s: (%s)" % (self.configFileFullPath, ex)
+                #print u"DEBUG:   Using the defaults instead"
+                pass
 
         self.setDefaults()
 
