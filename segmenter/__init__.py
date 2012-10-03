@@ -269,7 +269,9 @@ class Statistics:
                     if len(ar) == 2:
                         self.words.append(self.Statistic(ar[0], ar[1]))
                     else:
-                        self.messages.append("Warning: statistic in %s, line %d is missing a value" % (self.filename, curline))
+                        #TODO add self.messages to pass errors to the message tab
+                        #self.messages.append("Warning: statistic in %s, line %d is missing a value" % (self.filename, curline))
+                        pass
                     
         finally:
             fh.close()
