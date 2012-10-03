@@ -5,6 +5,11 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 import wx
 
+try:
+    WindowsError
+except NameError:
+    WindowsError = OSError
+
 config = None
 
 def run(segHelper):
@@ -77,7 +82,7 @@ def run(segHelper):
                 f = codecs.open(opts.outputfile, encoding='utf-8', mode='w')
                 f.write(segHelper.summary + "\n\n" + segHelper.results)
                 f.close()        
-            except (WindowsError, IOError), e:
+            except (WindowsError, OSError, IOError), e:
                 print "Warning: Failed to write to output file %s: %s" % (opts.outputfile, e)
         frame.DestroyChildren()
         frame.Destroy()
