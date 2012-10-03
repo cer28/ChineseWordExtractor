@@ -11,6 +11,48 @@
 # 㕶 㕶 [ň; ňg] /(Cant.) an expletive, exclamation/ -> n3; ng3
 # ������ [ǹ] => isn't output in this file anyway
 #
+# Needed to change manually due to unexpected syntax in a field:
+# 	
+# 	@@ -1605,7 +1644,7 @@
+# 	< 㮏 㮏 [nai4; ni4; nà 80020.040:nà; nai4; ni4] /(same as 柰) a fruit tree; a crab-apple, for which the second from is strictly used, leaves sprouting from the stump of a tree; shoots from an old stump/
+# 	> 㮏 㮏 [nai4; ni4; na4] /(same as 柰) a fruit tree; a crab-apple, for which the second from is strictly used, leaves sprouting from the stump of a tree; shoots from an old stump/
+# 	@@ -1898,7 +1937,7 @@
+# 	< 㳛 㳛 [yu2; yóu 80023.290:yóu; yu2] /dirty; filthy, corrupt, soap, black, to unravel silk threads/
+# 	> 㳛 㳛 [yu2; you2] /dirty; filthy, corrupt, soap, black, to unravel silk threads/
+# 	@@ -7387,7 +7426,7 @@
+# 	< 呒 呒 [ḿ] /unclear; an expletive/
+# 	> 呒 呒 [m2] /unclear; an expletive/
+# 	@@ -7490,7 +7529,7 @@
+# 	< 咹 咹 [e4; an4; ń] /(Cant.) sound of an automobile horn/
+# 	> 咹 咹 [e4; an4; n2] /(Cant.) sound of an automobile horn/
+# 	@@ -7581,7 +7620,7 @@
+# 	< 唔 唔 [ń; ńg; wu2] /hold in mouth; bite; (Cant.) not, negation/
+# 	> 唔 唔 [n2; ng2; wu2] /hold in mouth; bite; (Cant.) not, negation/
+# 	@@ -7872,7 +7911,7 @@
+# 	< 嘸 嘸 [ḿ] /unclear; an expletive; not/
+# 	> 嘸 嘸 [m2] /unclear; an expletive; not/
+# 	@@ -11519,7 +11558,7 @@
+# 	< 摷 摷 [jiao3; chāo 31978.030:chāo; jiao3] /(Cant.) to search for, look for; to beat up/
+# 	> 摷 摷 [jiao3; chao1] /(Cant.) to search for, look for; to beat up/
+# 	@@ -11541,7 +11580,7 @@
+# 	< 撍 撍 [zan3; zan1; zen1; qián 80026.080:qián; zan1; zen1; zan3] /to hold in the hand, to grasp; to wring; (Cant.) to pull out/
+# 	> 撍 撍 [zan3; zan1; zen1; qian2] /to hold in the hand, to grasp; to wring; (Cant.) to pull out/
+# 	@@ -13228,7 +13267,7 @@
+# 	< 欥 欥 [yi4; huan1; yù 32135.090:yù; yi4; huan1] /<no definition>/
+# 	> 欥 欥 [yi4; huan1; yu4] /<no definition>/
+# 	@@ -13598,7 +13637,7 @@
+# 	< 沗 沗 [pāng 31557.060:tiān; pang1] /<no definition>/
+# 	> 沗 沗 [tian1; pang1] /<no definition>/
+# 	@@ -20106,7 +20145,7 @@
+# 	< 蘉 蘉 [méng 53326.040:méng; mang2] /<no definition>/
+# 	> 蘉 蘉 [meng2; mang2] /<no definition>/
+# 	@@ -24520,7 +24559,7 @@
+# 	< 靇 靇 [long2; líng 74806.040:líng; long2] /<no definition>/
+# 	> 靇 靇 [long2; ling2] /<no definition>/
+# 	@@ -24777,7 +24816,7 @@
+# 	< 顈 顈 [xuan3; jiōng 74379.120:jiǒng; xian4; xuan3; jiong1] /<no definition>/
+# 	> 顈 顈 [jiong3; xian4; xuan3; jiong1] /<no definition>/
+# 
 㐀 㐀 [qiu1] /(same as U+4E18 丘) hillock or mound/
 㐁 㐁 [tian4] /to lick; to taste, a mat, bamboo bark/
 㐄 㐄 [kua4] /<no definition>/
@@ -1605,7 +1647,7 @@
 㮈 㮈 [nai4] /(non-classical form of 奈) but; how; what, a remedy; a resource, to bear, to endure/
 㮋 㮋 [you3] /(non-classical form of 栯) a kind of tree, a fruit tree/
 㮌 㮌 [mian2] /(same as U+68C9 棉) cotton; (Cant.) a kind of fruit/
-㮏 㮏 [nai4; ni4; nà 80020.040:nà; nai4; ni4] /(same as 柰) a fruit tree; a crab-apple, for which the second from is strictly used, leaves sprouting from the stump of a tree; shoots from an old stump/
+㮏 㮏 [nai4; ni4; na4] /(same as 柰) a fruit tree; a crab-apple, for which the second from is strictly used, leaves sprouting from the stump of a tree; shoots from an old stump/
 㮐 㮐 [sheng3; si4] /a rack or a stand with three sticks to cross each other, a chopping board/
 㮑 㮑 [cha1; qi4] /sound of broken sticks; crack of a wooden stick, a forest; wooded land/
 㮒 㮒 [yan1; yin1] /wood, (same as 禋) to worship with sincerity and reverence, to offer sacrifices to the Heaven/
@@ -1898,7 +1940,7 @@
 㳘 㳘 [chong1] /a fountain or spring flows downwards, sound of the flowing water/
 㳙 㳙 [xuan4] /(non-classical form of 涓) a brook, the smallest drop of water, to expel evil influences; to eliminate; rid off, to clean up, to select, a tributary (or a river), the flowing of a spring, (interchangeable 泫) to glisten; to sparkle, to weep/
 㳚 㳚 [xu4] /flowing of the water/
-㳛 㳛 [yu2; yóu 80023.290:yóu; yu2] /dirty; filthy, corrupt, soap, black, to unravel silk threads/
+㳛 㳛 [yu2; you2] /dirty; filthy, corrupt, soap, black, to unravel silk threads/
 㳜 㳜 [xiu1] /the flowing water/
 㳠 㳠 [ta4] /(simplified form of 澾) slippery ( as a road)/
 㳡 㳡 [guo1] /(simplified form of 濄) (same as 渦) name of a river, to whirl, an eddy/
@@ -7387,7 +7429,7 @@
 呏 呏 [sheng1] /gallon; quart/
 呐 呐 [ne5; na4] /raise voice, yell out loud, shout; stammer/
 呑 呑 [tun1] /swallow; absorb/
-呒 呒 [ḿ] /unclear; an expletive/
+呒 呒 [m2] /unclear; an expletive/
 呓 呓 [yi4] /talk in one's sleep, somniloquy/
 呔 呔 [dai1; tai3] /(Cant.) a necktie, a tire/
 呕 呕 [ou3; ou4] /vomit; annoy, enrage/
@@ -7490,7 +7532,7 @@
 咶 咶 [huai4; shi4; guo1; gua1; hua4] /<no definition>/
 咷 咷 [tao2] /howl, cry loudly/
 咸 咸 [xian2] /together; all, completely; united/
-咹 咹 [e4; an4; ń] /(Cant.) sound of an automobile horn/
+咹 咹 [e4; an4; n2] /(Cant.) sound of an automobile horn/
 咺 咺 [xuan3; xuan1] /majestic/
 咻 咻 [xiu1] /shout/
 咼 咼 [guo1] /chat, jaw, gossip, talk; mouth/
@@ -7581,7 +7623,7 @@
 唑 唑 [zuo4] /(chem.) azole/
 唒 唒 [qiu2] /<no definition>/
 唓 唓 [che1] /(Cant.) interjection/
-唔 唔 [ń; ńg; wu2] /hold in mouth; bite; (Cant.) not, negation/
+唔 唔 [n2; ng2; wu2] /hold in mouth; bite; (Cant.) not, negation/
 唕 唕 [zao4] /<no definition>/
 唖 唖 [ya3] /dumb, mute; become hoarse/
 唗 唗 [dou1] /<no definition>/
@@ -7872,7 +7914,7 @@
 嘵 嘵 [xiao1] /garrulous; disturbed; restless/
 嘶 嘶 [si1] /neighing of a horse; gravel voiced, husky throated; (Cant.) to hiccough/
 嘷 嘷 [hao2] /the roaring of wild beasts; to howl, to wail, to bawl/
-嘸 嘸 [ḿ] /unclear; an expletive; not/
+嘸 嘸 [m2] /unclear; an expletive; not/
 嘹 嘹 [liao2] /used describe clarity of voice; resonant/
 嘺 嘺 [qiao2; qiao4] /(Cant.) coincidental/
 嘻 嘻 [xi1] /mirthful, happy; interjection/
@@ -11519,7 +11561,7 @@
 摴 摴 [chu1] /to stretch out, to unroll; comfortable, easy (used for U+8212 舒); 摴蒲 is the name of a traditional play/
 摵 摵 [she4; su4; mi2] /(Cant.) to pull, lift up/
 摶 摶 [tuan2] /roll around with hand; model/
-摷 摷 [jiao3; chāo 31978.030:chāo; jiao3] /(Cant.) to search for, look for; to beat up/
+摷 摷 [jiao3; chao1] /(Cant.) to search for, look for; to beat up/
 摸 摸 [mo1; mo5] /gently touch with hand; caress/
 摹 摹 [mo2] /trace, copy, duplicate; pattern/
 摺 摺 [zhe2] /fold, bend; twisted, curved/
@@ -11541,7 +11583,7 @@
 撊 撊 [xian4] /fierce; wrathful/
 撋 撋 [ruan2; rui2; run2; ruo2; sui1] /to rub between the hands/
 撌 撌 [gui4] /<no definition>/
-撍 撍 [zan3; zan1; zen1; qián 80026.080:qián; zan1; zen1; zan3] /to hold in the hand, to grasp; to wring; (Cant.) to pull out/
+撍 撍 [zan3; zan1; zen1; qian2] /to hold in the hand, to grasp; to wring; (Cant.) to pull out/
 撎 撎 [yi4] /<no definition>/
 撏 撏 [xian2] /pull out, pluck; take hold of/
 撐 撐 [cheng1; cheng5] /prop up, support; brace; to push off (with a pole)/
@@ -13228,7 +13270,7 @@
 欢 欢 [huan5; huan1] /happy, pleased, glad; joy; enjoy/
 欣 欣 [xin1] /happy, joyous, delighted/
 欤 欤 [yu2] /a final particle used to express admiration, doubt, surprise, or to mark a question/
-欥 欥 [yi4; huan1; yù 32135.090:yù; yi4; huan1] /<no definition>/
+欥 欥 [yi4; huan1; yu4] /<no definition>/
 欦 欦 [qian1; han1; xian1; qian2] /<no definition>/
 欧 欧 [ou1] /translit.: Europe; ohm; surname/
 欨 欨 [xu1] /to blow or breathe upon; to smile/
@@ -13598,7 +13640,7 @@
 沔 沔 [mian3] /flood; overflowing/
 沕 沕 [mi4; wu4; fu1] /deep; (Cant.) to dive/
 沖 沖 [chong1; chong4] /pour, infuse, steep; wash away/
-沗 沗 [pāng 31557.060:tiān; pang1] /<no definition>/
+沗 沗 [tian1; pang1] /<no definition>/
 沘 沘 [bi3] /name of a river/
 沙 沙 [sha1] /sand, gravel, pebbles; granulated/
 沚 沚 [zhi3] /islet in stream; small sandbar/
@@ -20106,7 +20148,7 @@
 蘆 蘆 [lu2; lu5] /rushes, reeds/
 蘇 蘇 [su1] /revive, resurrect; a species of thyme; transliteration of 'Soviet'/
 蘈 蘈 [tui2] /<no definition>/
-蘉 蘉 [méng 53326.040:méng; mang2] /<no definition>/
+蘉 蘉 [meng2; mang2] /<no definition>/
 蘊 蘊 [yun4] /collect, gather, store; profound; (Budd.) skandha/
 蘋 蘋 [ping2] /apple/
 蘌 蘌 [yu3] /<no definition>/
@@ -24520,7 +24562,7 @@
 靄 靄 [ai3] /cloudy sky, haze; calm, peaceful/
 靅 靅 [fei4] /<no definition>/
 靆 靆 [dai4] /cloudy sky; not clear; dark/
-靇 靇 [long2; líng 74806.040:líng; long2] /<no definition>/
+靇 靇 [long2; ling2] /<no definition>/
 靈 靈 [ling2; ling5] /spirit, soul; spiritual world/
 靉 靉 [ai4] /cloudy sky; dark, obscure/
 靊 靊 [feng1] /<no definition>/
@@ -24777,7 +24819,7 @@
 顅 顅 [qian1] /<no definition>/
 顆 顆 [ke1] /grain, kernel/
 顇 顇 [cui4] /be worn out, be haggard/
-顈 顈 [xuan3; jiōng 74379.120:jiǒng; xian4; xuan3; jiong1] /<no definition>/
+顈 顈 [jiong3; xian4; xuan3; jiong1] /<no definition>/
 顉 顉 [qin1] /<no definition>/
 顊 顊 [yi2] /<no definition>/
 顋 顋 [sai1] /lower part of face; jaw; gills of a fish/
