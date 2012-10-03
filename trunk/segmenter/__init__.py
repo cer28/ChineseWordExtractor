@@ -5,6 +5,10 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 import re,os
 
+try:
+    WindowsError
+except NameError:
+    WindowsError = OSError
 
 
 class CJK:
@@ -109,7 +113,7 @@ class Dictionary:
         try:
             filebytes = os.path.getsize(filename)
             fh = open(filename)  #throws IOError
-        except (WindowsError, IOError), e:
+        except (WindowsError, OSError, IOError), e:
             self.messages.append("Warning: Failed to load dictionary %s: %s" % (filename, e.message))
             return
         try:
