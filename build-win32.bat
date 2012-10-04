@@ -1,10 +1,18 @@
-set PATH=C:\Program Files\Python27;%PATH%
+set PATH=C:\Program Files\Python27;c:\Program Files\TortoiseSVN\bin;%PATH%
 
-@REM Powershell -command "Remove-Item stage -Recurse"
-DEL /F /S /Q stage
+@REM DEL /F /S /Q stage
+RMDIR /S /Q stage
 
-@REM BASE URL is http://svn.zhtoolkit.com/ChineseWordExtractor/trunk
-"c:\Program Files\TortoiseSVN\bin\TortoiseProc.exe" /command:export /path:stage
+
+@REM BASE URL is http://svn.zhtoolkit.com/ChineseWordExtractor/tags/release-0_3_0
+
+REM **Make sure to choose the proper tags/release-* directory as the source
+TortoiseProc.exe /command:export /path:stage
+
+@REM TortoiseProc.exe /command:dropexport /path:http://svn.zhtoolkit.com/ChineseWordExtractor/tags/release-0_3_0 /droptarget:stage
+
+pause
+
 cd stage
 
 
@@ -21,4 +29,7 @@ chdir dist
 del "Chinese Word Extractor.exe"
 ren main.exe "Chinese Word Extractor.exe"
 
-REM Now rename the dist folder to "Chinese Word Extractor", zip it, and rename the zip file
+cd ..
+ren dist "Chinese Word Extractor"
+
+REM Now zip the folder "Chinese Word Extractor", and rename the zip file
