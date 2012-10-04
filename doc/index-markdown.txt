@@ -1,4 +1,4 @@
-﻿<!-- python "c:\Program Files\Python27\Scripts\markdown.py" index-markdown.txt -f index.html -x tables -x superscript -x footnotes -x subscript -->
+<!-- python "c:\Program Files\Python27\Scripts\markdown.py" index-markdown.txt -f index.html -x tables -x superscript -x footnotes -x subscript -->
 
 ## Chinese Word Extractor ##
 
@@ -18,7 +18,7 @@ If you need to filter out words from the output (for example, to eliminate words
 
 #### Windows ####
 
-Current version: [Chinese_Word_Extractor_0_3_0-win32.zip](Chinese_Word_Extractor_v0_3_0-win32.zip) (2012-10-03)
+Current version: [Chinese_Word_Extractor_0_3_0-win32.zip](http://www.zhtoolkit.com/apps/Chinese Word Extractor/Chinese_Word_Extractor_0_3_0-win32.zip) (2012-10-03)
 
 #### Linux ####
 
