@@ -1,0 +1,3 @@
+﻿2012-04-08
+
+For CC-CEDICT with multiple entries with the same simplified but different traditional characters, only one of the definitions gets defined.
