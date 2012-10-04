@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en-US">
 
@@ -51,28 +52,25 @@
 <h2>Chinese Word Extractor</h2>
 <h3>Introduction</h3>
 <p><em>Chinese Word Extractor</em> is a program to split any Chinese text into individual words, summarizing information about each unique word. The information is presented in the form of a tab-delimited matrix, so that the results can be easily copied and pasted into a spreadsheet program like Excel. The method for segmenting the words is simply to find the longest match within the dictionaries loaded into the program. This works well in general, but fails for some character combinations by splitting in the wrong place. it also fails to make words out of terms that aren't in the dictionary, and instead treats these as a series of single characters.</p>
-
 <p><img src="screen-main.png" alt="screenshot-output after analysis" title="" class="aligncenter size-medium wp-image-242" height="500" width="750"></p>
 
 <h3>Running the program</h3>
-<p>When starting the program, the active window will be the Source tab. Chinese text (which can include foreign text) can be entered into tis window in two different ways. In the first method, the Source tab functions like a normal editor, and data can be pasted into it and edited as necessary. The second method is to read data from one or more files. Select the File-&gt;Open menu item to open the file window. Navigate to the proper directory and select the desired file. Using Control + click, you can select multiple files to open at the same time. After clicking the <em>Open</em> button, the file(s) will be loaded into the editor window, and multiple files will be loaded in the order they were selected. Each file will include a heading with a special character and the file name. This can be useful in the summary window, as it marks the places where new files are encountered throughout the running vocabulary list.</p>
+<p>When starting the program, the active window will be the Source tab. Chinese text (which can include foreign text) can be entered into this window in two different ways. In the first method, the Source tab functions like a normal editor, and data can be pasted into it and edited as necessary. The second method is to read data from one or more files. Select the File-&gt;Open menu item to open the file window. Navigate to the proper directory and select the desired file. Using Control + click, you can select multiple files to open at the same time. After clicking the <em>Open</em> button, the file(s) will be loaded into the editor window, and multiple files will be loaded in the order they were selected. Each file will include a heading with a special character and the file name. This can be useful in the summary window, as it marks the places where new files are encountered throughout the running vocabulary list.</p>
 <p>With data in the Source tab, now select the File-&gt;Analyze menu item. A progress bar will show how the analysis is proceeding, but may be too fast to see for small amounts of text. When the analysis completes, the Results tab will be filled with data on each unique word found. Some of the columns are:</p>
-<p>
 <ul>
-<li>Word Number:    An incremental count of Chinese words, not including non-Chinese words or words not in the dictionary</li>
-<li>Running Total Words:    The sum of the total occurrences for this word and all previous words encountered</li>
-<li>Text:   The original word</li>
+<li>Word Number:  An incremental count of Chinese words, not including non-Chinese words or words not in the dictionary</li>
+<li>Running Total Words:  The sum of the total occurrences for this word and all previous words encountered</li>
+<li>Text:  The original word</li>
 <li>Number of Occurrences:  Number of times the word occurs in the text</li>
-<li>First Occurrence:    The character position of the first occurrence</li>
-<li>Traditional: Traditional variant of the word as defined in the dictionaries used. All variants will be listed if there are multiple mappings</li>
+<li>First Occurrence:  The character position of the first occurrence</li>
+<li>Traditional:  Traditional variant of the word as defined in the dictionaries used. All variants will be listed if there are multiple mappings</li>
 <li>Simplified:  Simplified variant of the word as defined in the dictionaries used. All variants will be listed if there are multiple mappings</li>
 <li>Pinyin:  Pinyin pronunciation as defined in the dictionaries. All values will be listed if there are multiple entries</li>
-<li>English: English definition as found in the dictionaries</li>
-<li>Sample Sentence: The first sentence the word was found in, with the word isolated by asterisks</li>
+<li>English:  English definition as found in the dictionaries</li>
+<li>Sample Sentence:  The first sentence the word was found in, with the word isolated by asterisks</li>
 </ul>
 <p>To export the Result data, simply highlight all the data using Control-A, and copy it to the clipboard. The contents can be pasted directly into Excel or another spreadsheet program for further analysis.</p>
 <h3>Setting preferences</h3>
-
 <p><img src="screen-prefs.png" alt="screenshot-preferences" title="" class="aligncenter size-medium wp-image-242" height="419" width="709"></p>
 
 <p>By selecting File-&gt;Preferences, you can manage the current settings of the program.</p>
@@ -88,11 +86,31 @@
 <h3>Adding extra column data</h3>
 <p>Data used in the columns of the results are obtained from files in the program subdirectory "data", in specific subdirectories for simplified and traditional characters. Data in these files will contain two columns separated by a tab: the first column will be a word and the second will be a value associated with the word. In the results, an extra column will be added for any data files set to active in Preferences. For words defined in the file, the corresponding value will be inserted in the extra column. For words not listed, the data will be blank.</p>
 <p>If there is a line in the file starting with the text "# Heading: ", the remaining text on the line will be used as the column heading in the results. If the line is not found in the file, the filename will be used as the column name.</p>
-
 <p><img src="screen-folders.png" alt="screenshot-folders" title="" class="aligncenter size-medium wp-image-242" height="130" width="191"></p>
 
 <h3>Note on Unicode UTF-8 encoding</h3>
-<p>Some programs, when saving files in UTF-8 format, will insert as the first character in the file an extra character known as a byte-order mark (BOM). It's difficult to tell whether this character exists in the file without hex editors or other special software. This program will read dictionaries, filters, or extra column files as if the BOM were real data. This means that data on the first line of the file will not work as expected. If you are uncertain whether this is happening and want to protect against it, you can simply have a comment (a line starting with '#') as the first line of the file.</p>
+<p>Some programs, when saving files in UTF-8 format, will insert as the first character in the file an extra character known as a byte-order mark (BOM). It's difficult to tell whether this character exists in the file without hex editors or other special software. This program will read dictionaries, filters, or extra column files as if the BOM were real data. This means that data on the first line of the file may not work as expected. If you are uncertain whether this is happening and want to protect against it, you can simply have a comment (a line starting with '#') as the first line of the file.</p>
+<h3>Command Line Usage</h3>
+<p>The program can also function in console mode, useful for situations involving automation or creating launch shortcuts. Alternate configuration files can be used, for
+example, to start the program in either simplified or traditional mode, or to use different dictionaries. The --inputfile parameter can be used to load an initial
+file into the source window without needing to open it from the menus. The --outputfile parameter can be used to bypass the windowed application almost entirely (except for temporary progress messages) and send its tabular data to the specified file. Current options are as follows:</p>
+<pre><code>"Chinese Word Extractor.exe" --help
+
+Usage: main.py
+
+Options:
+  -h, --help            show this help message and exit
+  -c CONFIG, --config=CONFIG
+                        path to config file
+  -i INPUTFILE, --inputfile=INPUTFILE
+                        Path to input file
+  -o OUTPUTFILE, --outputfile=OUTPUTFILE
+                        When using an inputfile parameter, print summary
+                        output to a file (use '-' as filename to print to the
+                        console), and do not show an application window
+  --appdir=APPDIR       Base directory of the application. It must contain
+                        subdirectories dict, data, and filter
+</code></pre>
     </div> <!-- content -->
 
 </div>
