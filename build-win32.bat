@@ -1,8 +1,6 @@
 set PATH=C:\Program Files\Python27;c:\Program Files\TortoiseSVN\bin;%PATH%
 
-@REM DEL /F /S /Q stage
 RMDIR /S /Q stage
-
 
 @REM BASE URL is http://svn.zhtoolkit.com/ChineseWordExtractor/tags/release-0_3_0
 
