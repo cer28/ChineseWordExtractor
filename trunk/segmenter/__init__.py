@@ -266,7 +266,7 @@ class Statistics:
                         # These are comment lines
                         continue
                     ar = line.split('\t')
-                    if len(ar) == 2:
+                    if len(ar) >= 2:
                         self.words.append(self.Statistic(ar[0], ar[1]))
                     else:
                         #TODO add self.messages to pass errors to the message tab
