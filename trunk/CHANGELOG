@@ -1,6 +1,10 @@
 CHANGES
 =======
 
+0.3.2	2013-01-20
+  - Sentence splitting was broken (corrupted by text editor?) and only split on periods and exclamation marks. Now works on .!?" and the unicode fullwidth equivalents plus the open circle period
+  - filter files accept the first column of a string separated by a space or tab; previous versions recognized just tab
+
 0.3.1	2012/10/30
   - Allow extra data columns to have more than two columns (characters and value are the first two columns in these cases)
   - Updated CC-CEDICT to 10/30/2012

@@ -570,7 +570,8 @@ class Segmenter:
     def segmentBySentence(self, segResults, text):
 
         # For now, we will assume no hard wrapping; i.e., linefeeds can mark the end of a sentence
-        notTokens = u"(([.!?????]+)|[ \t]{2,}|\s+)"
+        #notTokens = u"(([.!?????]+)|[ \t]{2,}|\s+)"
+        notTokens = u"(([\.!\?\"\uFF0E\u3002\uFF1F\uFF01\u201d]+)|[ \t]{2,}|\s+)"
         "Note: the stop delimiters are group 2; add these to the original sentence if found"
 
         idx = 0
