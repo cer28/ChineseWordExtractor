@@ -99,7 +99,7 @@ class SegmenterHelper:
             for line in fh.read().splitlines():
                 lineno += 1
                 if not re.match('\s*#', unicode(line, "utf-8")):
-                    m = re.match('[^\t]+', unicode(line, "utf-8"))
+                    m = re.match('[^ \t]+', unicode(line, "utf-8"))
                     if m:
                         self.filterwords.append(m.group(0))
         finally:

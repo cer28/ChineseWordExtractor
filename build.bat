@@ -1,7 +1,17 @@
-Powershell -command "Remove-Item stage -Recurse"
+set PATH=C:\Program Files\Python27;c:\Program Files\TortoiseSVN\bin;%PATH%
 
-@REM BASE URL is http://svn.zhtoolkit.com/ChineseWordExtractor/trunk
-"c:\Program Files\TortoiseSVN\bin\TortoiseProc.exe" /command:export /path:stage
+RMDIR /S /Q stage
+
+@REM BASE URL is http://svn.zhtoolkit.com/ChineseWordExtractor/tags/release-0_3_1
+
+REM **Make sure to choose the proper tags/release-* directory as the source
+TortoiseProc.exe /command:export /path:stage
+
+@REM doesn't work
+@REM TortoiseProc.exe /command:dropexport /path:http://svn.zhtoolkit.com/ChineseWordExtractor/tags/release-0_3_1 /droptarget:stage
+
+pause
+
 cd stage
 
 
@@ -13,23 +23,14 @@ copy ..\msvcr90.dll .\
 
 python exe-setup.py py2exe
 
-@REM copy ..\Microsoft.VC90.CRT.manifest dist
-@REM copy ..\msvcm90.dll dist
-@REM copy ..\msvcp90.dll dist
-@REM copy ..\msvcr90.dll dist
-@REM copy application-icon.ico dist
-
-@REM Thanks for quietly ignoring these in a script, but work fine from the console
-@REM xcopy data    dist\data    /E /I
-@REM xcopy dict    dist\dict    /E /I
-@REM xcopy filter  dist\filter  /E /I
-@REM xcopy samples dist\samples /E /I
-
-Powershell -command "Copy-Item -Recurse data dist\data"
-Powershell -command "Copy-Item -Recurse dict dist\dict"
-Powershell -command "Copy-Item -Recurse filter dist\filter"
-Powershell -command "Copy-Item -Recurse samples dist\samples"
 
 chdir dist
 del "Chinese Word Extractor.exe"
 ren main.exe "Chinese Word Extractor.exe"
+
+cd ..
+ren dist "Chinese Word Extractor"
+
+REM Now zip the folder "Chinese Word Extractor", and rename the zip file
+
+pause
