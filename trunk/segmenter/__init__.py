@@ -26,6 +26,9 @@ class CJK:
     cjkLingZero = u'\u3007'
     cjkFullwidthLatin = u'\uFF21-\uFF3A\uFF41-\uFF5A'
     cjkKatakanaMiddleDot = u'\u30FB'
+    
+    #Bopomofo and zhuyin
+    cjkBopomofo = u'\u3105-\u312D\u31A0-\u31A5\u02EA\u02EB\u02CA\u02C7\u02CB\u02D9'
 
 
 class DictionaryWord:
@@ -69,7 +72,7 @@ class Dictionary:
             #A comment line
             return None
 
-        cjkRange = u'%s%s%s%s%s%s%s' % (CJK.cjkKatakanaMiddleDot, CJK.cjkFullwidthComma, CJK.cjkLingZero, CJK.cjkUnifiedIdeographsExtA, CJK.cjkUnifiedIdeographs, CJK.cjkCompatibilityIdeographs, CJK.cjkFullwidthLatin)
+        cjkRange = u'%s%s%s%s%s%s%s%s' % (CJK.cjkKatakanaMiddleDot, CJK.cjkFullwidthComma, CJK.cjkLingZero, CJK.cjkUnifiedIdeographsExtA, CJK.cjkUnifiedIdeographs, CJK.cjkCompatibilityIdeographs, CJK.cjkFullwidthLatin, CJK.cjkBopomofo)
 
         # Allow semicolons in pinyin, because the chardict has them that way
         #pat = u'([%s]+)[ \t]([%s]+)[ \t]\[([a-zA-Z0-9,\xb7: ]+)\][ \t]/(.*)/\s*$' % (cjkRange, cjkRange)
@@ -89,7 +92,7 @@ class Dictionary:
             #A comment line
             return None
 
-        cjkRange = u'%s%s%s%s%s%s%s' % (CJK.cjkKatakanaMiddleDot, CJK.cjkFullwidthComma, CJK.cjkLingZero, CJK.cjkUnifiedIdeographsExtA, CJK.cjkUnifiedIdeographs, CJK.cjkCompatibilityIdeographs, CJK.cjkFullwidthLatin)
+        cjkRange = u'%s%s%s%s%s%s%s%s' % (CJK.cjkKatakanaMiddleDot, CJK.cjkFullwidthComma, CJK.cjkLingZero, CJK.cjkUnifiedIdeographsExtA, CJK.cjkUnifiedIdeographs, CJK.cjkCompatibilityIdeographs, CJK.cjkFullwidthLatin, CJK.cjkBopomofo)
 
         pat = u'([%s]+) \[([a-zA-Z0-9,\xb7: ]+)\] /(.*)/\s*$' % (cjkRange, cjkRange)
 
@@ -606,9 +609,9 @@ class Segmenter:
     def segment(self, text, updatefunction=None):
 
         if self.tokenMatchType == 'cjk':
-            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, self.sectionBreakChar))
+            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkBopomofo, self.sectionBreakChar))
         elif self.tokenMatchType == 'cjk_plus_az':
-            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkFullwidthLatin, self.sectionBreakChar))
+            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkFullwidthLatin, CJK.cjkBopomofo, self.sectionBreakChar))
         else:
             #TODO add a self.messages and display it in the log tab
             #print "Unknown token match type %s" % self.tokenMatchType
