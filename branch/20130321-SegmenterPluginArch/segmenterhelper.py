@@ -150,8 +150,10 @@ class SegmenterHelper:
         self.addMessage("Analyzing text ...")
 
         self.summary += "Length of text = %d" % len(self.text) + "\n"
-        results = self.seg.segment(self.text, updatefunction)
+        results = self.seg.segment(self.text, updatefunction, None) #"ReversedLongestMatch"
         self.summary += "\n\nResults.tokens (%d)" % len(results.tokens) + "\n"
+
+        self.tokens = ' | '.join(t.text for t in results.tokens)
 
 #        for lex in results.tokens:
 #            sys.stdout.write(lex.text)
