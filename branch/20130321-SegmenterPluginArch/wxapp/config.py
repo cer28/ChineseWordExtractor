@@ -11,6 +11,7 @@ class Config(dict):
     configFileFullPath = None
     appDir = None
 
+    #todo these "dirty" flags should go into the controller. When stored here they get serialized which is pointless
     dirtyDicts = False
     dirtyFilters = False
     dirtyExtraCols = False
@@ -32,6 +33,7 @@ class Config(dict):
             'currentdir': "samples",
             'dictionaries': ['cedict_ts-merged-refs.u8'],
             'charset': 'simplified',
+            'segmentmethod': 'Forward longest match',
             }
 
         for (k,v) in fields.items():

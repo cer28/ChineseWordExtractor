@@ -68,22 +68,22 @@ class NoteBook1(wx.Notebook):
         #the first paste into a TextCtrl truncates at 30k characters on Windows. The following
         #line, while setting a hard-limit on the text size, is a quick way to fix
         #the 30k bug
-        self.editorPanel.SetMaxLength(1e9)
+        self.editorPanel.SetMaxLength(int(1e9))
         self.AddPage(self.editorPanel, 'Source')
 
         self.summaryPanel = SummaryPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
         self.AddPage(self.summaryPanel, 'Summary', )
 
         self.resultPanel = ResultPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
-        self.resultPanel.SetMaxLength(1e9)
+        self.resultPanel.SetMaxLength(int(1e9))
         self.AddPage(self.resultPanel, 'Results', )
 
         self.tokenPanel = TokenPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY )
-        self.tokenPanel.SetMaxLength(1e9)
+        self.tokenPanel.SetMaxLength(int(1e9))
         self.AddPage(self.tokenPanel, 'Segmented', )
 
         self.messagePanel = ResultPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
-        self.messagePanel.SetMaxLength(1e9)
+        self.messagePanel.SetMaxLength(int(1e9))
         self.AddPage(self.messagePanel, 'Messages', )
 
 
@@ -138,7 +138,7 @@ class MainWindow(wx.Frame):
 
         self.dirname = self.config['currentdir']
         #dlg = wx.FileDialog(self, "Choose a file", self.dirname, "", "Text Files (*.txt)|*.txt|UTF-8 text files (*.txt, *.u8)|*.u8;*.txt|All files (*)|*.*", style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
-        dlg = wx.FileDialog(self, "Choose one or more files", self.dirname, "", "text files (*.txt, *.u8, *.gb, *.big5)|*.txt;*.u8;*.gb;*.big5|HTML files (*.htm, *.html)|*.htm;*.html|All files (*)|*.*", style=wx.OPEN | wx.MULTIPLE | wx.CHANGE_DIR)
+        dlg = wx.FileDialog(self, "Choose one or more files", self.dirname, "", "text files (*.txt, *.u8, *.gb, *.big5)|*.txt;*.u8;*.gb;*.big5|HTML files (*.htm, *.html)|*.htm;*.html|All files (*)|*.*", style=wx.FD_OPEN | wx.FD_MULTIPLE | wx.FD_CHANGE_DIR)
         if dlg.ShowModal() == wx.ID_OK:
             #self.filename = dlg.GetFilename()
             #self.dirname = dlg.GetDirectory()
@@ -161,7 +161,7 @@ class MainWindow(wx.Frame):
         
     def OnPreferences(self, e):
         import prefsdialog
-        d = prefsdialog.PrefsDialog(self, self.config)
+        d = prefsdialog.PrefsDialog(self, self.segHelper)
         d.ShowModal()
         d.Destroy()
         if self.config.dirtyDicts:
