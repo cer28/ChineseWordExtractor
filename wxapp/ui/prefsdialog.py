@@ -17,7 +17,7 @@ class PrefsDialog ( wx.Dialog ):
         self.SetSizeHintsSz( wx.DefaultSize, wx.DefaultSize )
         
         #topSizer = wx.BoxSizer( wx.VERTICAL )
-        topSizer = wx.FlexGridSizer( 3, 1, 0, 0 )
+        topSizer = wx.FlexGridSizer( 4, 1, 0, 0 )
         topSizer.SetFlexibleDirection( wx.BOTH )
         topSizer.SetNonFlexibleGrowMode( wx.FLEX_GROWMODE_SPECIFIED )
 
