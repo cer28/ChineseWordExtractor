@@ -44,6 +44,10 @@ class MessagePanel1(SelectableTextCtrl):
     def __init__(self, parent, *args, **kwargs):
         SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
 
+class TokenPanel1(SelectableTextCtrl):
+    def __init__(self, parent, *args, **kwargs):
+        SelectableTextCtrl.__init__(self, parent, *args, **kwargs)
+
 
 
     
@@ -74,6 +78,10 @@ class NoteBook1(wx.Notebook):
         self.resultPanel.SetMaxLength(1e9)
         self.AddPage(self.resultPanel, 'Results', )
 
+        self.tokenPanel = TokenPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY )
+        self.tokenPanel.SetMaxLength(1e9)
+        self.AddPage(self.tokenPanel, 'Segmented', )
+
         self.messagePanel = ResultPanel1(self, 1, style=wx.TE_MULTILINE |wx.TE_READONLY | wx.TE_DONTWRAP )
         self.messagePanel.SetMaxLength(1e9)
         self.AddPage(self.messagePanel, 'Messages', )
@@ -94,6 +102,7 @@ class MainWindow(wx.Frame):
         #st = wx.StaticText(self.notebook.resultPanel, -1, self.segHelper.summary, (10, 10))
         self.notebook.summaryPanel.SetValue(self.segHelper.summary)
         self.notebook.resultPanel.SetValue(self.segHelper.results)
+        self.notebook.tokenPanel.SetValue(self.segHelper.tokens)
         self.notebook.messagePanel.SetValue(self.segHelper.getMessages())
 
 

@@ -5,10 +5,14 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 import re,os
 
+from segmenter.plugins import SegmentMethodPlugin
+print SegmentMethodPlugin.__subclasses__()
+
 try:
     WindowsError
 except NameError:
     WindowsError = OSError
+
 
 
 class CJK:
@@ -379,7 +383,8 @@ class SegmenterResults:
                     return ' ' + result
                 else:
                     return result
-        return None
+        #return None
+        return ''
 
 class Segmenter:
     '''
@@ -389,6 +394,7 @@ class Segmenter:
     '''
 
     characterSets = ('simplified', 'traditional', 'combined')  ## NOTE not yet sure if combined logically will work
+    #TODO refactor segmentationMethods into plugin arch
     segmentationMethods = ('simpleLongestMatch', 'longestMatchPlusTransliterations', 'longestMatchPlusTranslitPlusChNames')
     tokenMatchTypes = ('cjk', 'cjk_plus_az')
     #at some point maybe this can converted to an open text tag, or a mutable list
@@ -501,6 +507,7 @@ class Segmenter:
         else:
             self.dictionaryOperationType = dictionaryOperationType
 
+        self.loadPlugins("segmenter/plugins")
 
         self.words = {};
         self._buildWordList();
@@ -606,8 +613,19 @@ class Segmenter:
         
         return
     
-    def segment(self, text, updatefunction=None):
+    def segment(self, text, updatefunction=None, method=None):  #"ReversedLongestMatch"
+        if method == None:
+            return self.segmentMethodBuiltin(text, updatefunction)
+        else:
+            methods = {}
+            for m in SegmentMethodPlugin.__subclasses__():
+                methods[m.key] = m
+            print methods
+            cls = methods[method]
+            seg = cls()
+            return seg.segment(self, text, updatefunction)
 
+    def segmentMethodBuiltin(self, text, updatefunction=None):
         if self.tokenMatchType == 'cjk':
             tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkBopomofo, self.sectionBreakChar))
         elif self.tokenMatchType == 'cjk_plus_az':
@@ -658,4 +676,31 @@ class Segmenter:
         
         self.segmentBySentence(results, text)
         return results
+
+    def loadPlugins(self, pluginFolder):
+        import sys
+        loadedPlugins = []
+        print "wtf"
+        print pluginFolder
+        if not os.path.exists(pluginFolder):
+            print "Plugin folder does not exist"
+            return loadedPlugins
+        sys.path.insert(0, pluginFolder)
+        #plugins = self.enabledPlugins()
+        print os.listdir(pluginFolder)
+        plugins = [i for i in os.listdir(pluginFolder) if i.endswith(".py") and i != "__init__.py"]
+        plugins.sort()
+        for plugin in plugins:
+            try:
+                nopy = plugin.replace(".py", "")
+                __import__(nopy)
+                #self.addMessage("Plugin %s loaded" % (plugin))
+                loadedPlugins.append(nopy)
+                print "Segmenter plugin %s loaded" % (plugin)
+                
+            except:
+                #print "Error in %s" % plugin
+                print "Plugin %s failed to load: %s" % (plugin, sys.exc_info()[0])
+                import traceback
+                traceback.print_exc()
 
