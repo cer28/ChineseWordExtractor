@@ -1,0 +1,25 @@
+(using wxPython 3)
+building on 32-bit Python
+
+Python 2.7
+
+wxPython 3.0.1.1 from http://www.wxpython.org/
+chardet from https://pypi.python.org/pypi/chardet
+
+
+(using wxPython 4)
+C:\Temp>pip install wxPython
+Collecting wxPython
+  Downloading wxPython-4.0.0b1-cp27-cp27m-win_amd64.whl (21.1MB)
+    100% |################################| 21.1MB 27kB/s
+Collecting six (from wxPython)
+  Downloading six-1.10.0-py2.py3-none-any.whl
+Installing collected packages: six, wxPython
+Successfully installed six-1.10.0 wxPython-4.0.0b1
+
+C:\Temp>pip install chardet
+Collecting chardet
+  Downloading chardet-3.0.4-py2.py3-none-any.whl (133kB)
+    100% |################################| 143kB 701kB/s
+Installing collected packages: chardet
+Successfully installed chardet-3.0.4

@@ -28,8 +28,7 @@ def run(segHelper):
                       default=segHelper.runningDir)
     (opts, args) = parser.parse_args(sys.argv[1:])
 
-
-    app = wx.PySimpleApp()
+    app = wx.App(False)
 
     # Notes on icon bundles:
     # 1) can't be 256x256 because too big to import within the application
@@ -39,9 +38,10 @@ def run(segHelper):
 
     # pre-load icons; they need to be set for the load dictionary progress, since it happens before the main frame shows
     ib = wx.IconBundle()
-    ib.AddIconFromFile(os.path.join(segHelper.runningDir, "application-icon.ico"), wx.BITMAP_TYPE_ANY)
+    ib.AddIcon(os.path.join(segHelper.runningDir, "application-icon.ico"), wx.BITMAP_TYPE_ANY)
 
     # configuration
+    # todo some of these should be moved to the seghelper controller
     config = config.Config(
        unicode(os.path.abspath(opts.config), sys.getfilesystemencoding()))
 
@@ -51,6 +51,7 @@ def run(segHelper):
     prog = wx.ProgressDialog(parent=None, title="Progress", message="Loading Dictionary", style=wx.PD_AUTO_HIDE|wx.PD_SMOOTH)
     prog.SetIcons(ib)
     segHelper.config = config
+    segHelper.FindSegmenterPlugins()
     segHelper.LoadData(updatefunction=prog.Update)
     prog.Destroy()
 

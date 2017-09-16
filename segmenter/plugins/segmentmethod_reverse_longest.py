@@ -2,11 +2,8 @@ import re
 from segmenter import CJK, SegmenterResults
 from segmenter.plugins import SegmentMethodPlugin
 
-cls = "SegmentMethodReverseLongest"
-
 class SegmentMethodReverseLongest(SegmentMethodPlugin):
 
-    key = "ReversedLongestMatch"
     name = "Reversed longest match"
     description = "Longest matching, working backward from the end of the text"
 

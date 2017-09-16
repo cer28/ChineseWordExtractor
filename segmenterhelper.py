@@ -6,6 +6,8 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 import segmenter
 import os
 
+from segmenter.plugins import SegmentMethodPlugin
+
 
 # The data here gets refreshed when called
 class SegmenterHelper:
@@ -39,8 +41,12 @@ class SegmenterHelper:
         self.dicts = []
         self.filterwords = []
         self.config = None
+        self.segmenter = None
         self.stats = {}  # a mapping between filenames and data list
         self.statFiles = {}  # a mapping between filenames and heading
+        self.segmentMethods = []
+        self.segmentMethod = None
+
 
 
     def LoadData(self, updatefunction=None):
@@ -57,17 +63,18 @@ class SegmenterHelper:
         for dictname in config['dictionaries']:
             self.addMessage("Loading dictionary %s ..." % dictname)
             dictFile = os.path.join(config.appDir, 'dict', dictname)
-            dict = segmenter.Dictionary(dictFile, format='cedict', verbose=True, updatefunction=updatefunction)
+            dic = segmenter.Dictionary(dictFile, formatType='cedict', verbose=True, updatefunction=updatefunction)
 
-            if dict.messages != None:
-                for elem in dict.messages:
+            if dic.messages != None:
+                for elem in dic.messages:
                     self.addMessage(elem)
                 # add a blank line
 
-            self.addMessage("Loaded dictionary %s, %d words" % (dictname, dict.getWordCount()))
-            self.dicts.append(dict)
+            self.addMessage("Loaded dictionary %s, %d words" % (dictname, dic.getWordCount()))
+            self.dicts.append(dic)
 
-        self.seg = segmenter.Segmenter(charset, self.dicts, self.stats)
+        self.segmenter = segmenter.Segmenter(runningDir=self.runningDir, character=charset,
+                                       dictArray=self.dicts, statDict=self.stats, segmentMethod=self.segmentMethod)
         self.addMessage("")
 
 
@@ -84,7 +91,7 @@ class SegmenterHelper:
         for statfile in self.config['extracolumns']:
             self.LoadStatisticsFile(self.config, statfile, charset)
 
-        self.seg.setStatistics(self.stats)
+        self.segmenter.setStatistics(self.stats)
 
     def LoadFilterFile(self, filename):
         import re
@@ -149,8 +156,10 @@ class SegmenterHelper:
 
         self.addMessage("Analyzing text ...")
 
+        self.summary += "Segment method = %s\n" % self.segmentMethod.name
+
         self.summary += "Length of text = %d" % len(self.text) + "\n"
-        results = self.seg.segment(self.text, updatefunction, None) #"ReversedLongestMatch"
+        results = self.segmenter.segment(self.text, updatefunction)
         self.summary += "\n\nResults.tokens (%d)" % len(results.tokens) + "\n"
 
         self.tokens = ' | '.join(t.text for t in results.tokens)
@@ -247,3 +256,60 @@ class SegmenterHelper:
             if stat.S_ISREG(st.st_mode):
                 choices.append(filename)
         return choices
+
+    def FindSegmenterPlugins(self):
+        pluginFolder = "segmenter/plugins"
+        #self.loadPlugins(os.path.join(runningDir, "segmenter/plugins"))
+
+        import sys
+
+        if not os.path.exists(pluginFolder):
+            print "Plugin folder %s does not exist" % pluginFolder
+            return
+
+        sys.path.insert(0, pluginFolder)
+
+        files = [i for i in os.listdir(pluginFolder) if i.endswith(".py") and i != "__init__.py"]
+        files.sort()
+        for fn in files:
+            nopy = fn.replace(".py", "")
+            try:
+                __import__(nopy)
+                self.addMessage("Plugin %s loaded" % (nopy))
+                #self.segmentationMethods.append(nopy)
+                #print "Segmenter plugin %s loaded" % (plugin)
+                
+            except:
+                #print "Error in %s" % plugin
+                print "Plugin %s failed to load: %s" % (nopy, sys.exc_info()[0])
+                import traceback
+                traceback.print_exc()
+        
+        for m in SegmentMethodPlugin.__subclasses__():
+            try:
+                seg = m()
+                self.segmentMethods.append(seg)
+
+            except:
+                print "Plugin %s failed to initialize: %s" % (nopy, sys.exc_info()[0])
+                traceback.print_exc()
+
+        print self.GetSegmentMethodNames()
+        self.SetSegmentMethodByName(self.config["segmentmethod"])
+        #self.config['segmentmethods'] = self.segmentMethods
+
+    def GetSegmentMethodNames(self):
+        return [ m.name for m in self.segmentMethods]
+
+    def SetSegmentMethodByName(self, name):
+        for val in self.segmentMethods:
+            if val.name == name:
+                self.segmentMethod = val
+                if self.segmenter != None:
+                    self.segmenter.segmentationMethod = val
+
+                self.config['segmentmethod'] = name
+                print "Segmenter method set to '%s'" % name
+                return
+            
+        print "Failed to set segmenter plugin '%s' -- class not found" % name

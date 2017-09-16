@@ -5,8 +5,6 @@ License: GNU GPL, version 3 or later; http://www.gnu.org/copyleft/gpl.html
 
 import re,os
 
-from segmenter.plugins import SegmentMethodPlugin
-#print SegmentMethodPlugin.__subclasses__()
 
 try:
     WindowsError
@@ -184,7 +182,7 @@ class Dictionary:
         finally:
             fh.close()
 
-    def __init__(self, filename, format, character=None, dataType = 'words', description=None, tag=None, verbose=False, updatefunction=None):
+    def __init__(self, filename, formatType, character=None, dataType = 'words', description=None, tag=None, verbose=False, updatefunction=None):
         '''
         Constructor
         '''
@@ -192,11 +190,11 @@ class Dictionary:
         self.words = []
         self.messages = []
         self.filename = filename
-        if not format in self.formatTypes:    # why does this say formatTypes is not defined
-            self.messages.append("Unknown dictionary format %s" % format)
-            raise Exception("Unknown dictionary format %s" % format)
+        if not formatType in self.formatTypes:    # why does this say formatTypes is not defined
+            self.messages.append("Unknown dictionary format %s" % formatType)
+            raise Exception("Unknown dictionary format %s" % formatType)
         else:
-            self.format = format
+            self.format = formatType
 
         self.dataType = dataType
 
@@ -208,18 +206,18 @@ class Dictionary:
         self.tag = tag
         self.verbose = verbose
 
-        if (format == 'cedict'):
+        if (formatType == 'cedict'):
             self.readCedictFile(filename, updatefunction)
-        elif (format == 'edict'):
+        elif (formatType == 'edict'):
             if not character in self.characterTypes:
                 self.messages.append("Dictionary format 'edict' requires to define traditional/simplified")
                 raise Exception("Dictionary format 'edict' requires to define traditional/simplified")
             self.readEdictFile(filename, character)
-        elif (format == 'tab'):
+        elif (formatType == 'tab'):
             self.readTabFile(filename)
         else :
-            self.messages.append("Unknown dictionary format '%s'" % format)
-            raise Exception("Unknown dictionary format '%s'" % format)
+            self.messages.append("Unknown dictionary format '%s'" % formatType)
+            raise Exception("Unknown dictionary format '%s'" % formatType)
 
     def __str__(self):
         return 'Dictionary %s (%s), %d Entries' % (self.description, self.filename, len(self.words))
@@ -392,8 +390,7 @@ class Segmenter:
     '''
 
     characterSets = ('simplified', 'traditional', 'combined')  ## NOTE not yet sure if combined logically will work
-    #TODO refactor segmentationMethods into plugin arch
-    segmentationMethods = ('simpleLongestMatch', 'longestMatchPlusTransliterations', 'longestMatchPlusTranslitPlusChNames')
+
     tokenMatchTypes = ('cjk', 'cjk_plus_az')
     #at some point maybe this can converted to an open text tag, or a mutable list
     dictionaryOperationTypes = ('replace', 'append', 'addifempty')
@@ -475,21 +472,21 @@ class Segmenter:
         def isSectionBreak(self):
             return True
 
-    def __init__(self, character, dictArray, statDict, method='simpleLongestMatch', tokenMatchType='cjk', dictionaryOperationType='replace', verbose=False):
+    def __init__(self, runningDir, character, dictArray, statDict, segmentMethod=None, tokenMatchType='cjk', dictionaryOperationType='replace', verbose=False):
         '''
         Constructor
         Note that the Segmenter knows whether to allow just CJK or CJK + A-Z,
         but the dictionary has it's own separate regexp for what is a valid character string.
+        
+        runningDir is just needed for loadPlugins -- needs an absolute path because the working directory changes
+        after opening a file
         '''
         if not character in self.characterSets:
             raise Exception("Unknown character type '%s'" % character)
         else:
             self.character = character
 
-        if not method in self.segmentationMethods:    # why does this say formatTypes is not defined
-            raise Exception("Unknown segmentation method %s" % method)
-        else:
-            self.segmentationMethod = method
+        self.segmentationMethod = segmentMethod
 
         if not tokenMatchType in self.tokenMatchTypes:    # why does this say formatTypes is not defined
             raise Exception("Unknown token match type %s" % tokenMatchType)
@@ -505,8 +502,6 @@ class Segmenter:
         else:
             self.dictionaryOperationType = dictionaryOperationType
 
-        self.loadPlugins("segmenter/plugins")
-
         self.words = {};
         self._buildWordList();
         self._buildStatistics();
@@ -516,14 +511,14 @@ class Segmenter:
         self._buildStatistics();
 
     def _buildWordList(self):
-        for dict in self.dictionaries:
+        for dic in self.dictionaries:
             'note: words in the same dictionary get merged, while words in different dictionaries are handled depending on dictionaryOperationType'
-            for dictword in dict.words:
+            for dictword in dic.words:
                 if self.character in ('simplified', 'combined'):
                     #print word.simplified
-                    self._addWord(dictword.simplified, dict.description, dictword)
+                    self._addWord(dictword.simplified, dic.description, dictword)
                 if self.character in ('traditional', 'combined'):
-                    self._addWord(dictword.traditional, dict.description, dictword)
+                    self._addWord(dictword.traditional, dic.description, dictword)
                     #print word.traditional
                 else:
                     pass
@@ -555,7 +550,7 @@ class Segmenter:
         
         
 
-    def _addWord(self, key, dict, word):
+    def _addWord(self, key, dic, word):
         '''
         The format of the words data structure is words{key} : Word
         Each Chinese word can be found in multiple dictionaries, and even in the same dictionary multiple times
@@ -565,8 +560,8 @@ class Segmenter:
 #        if not key in self.words:
 #            self.words[key] = {}
 #        
-#        if not dict in self.words[key]:
-#            self.words[key][dict] = []
+#        if not dic in self.words[key]:
+#            self.words[key][dic] = []
 
         #self.getWord(key).[dict].append(word)
         self.getWord(key, True).addDictionaryWord(word, self.dictionaryOperationType)
@@ -611,93 +606,13 @@ class Segmenter:
         
         return
     
-    def segment(self, text, updatefunction=None, method=None):  #"ReversedLongestMatch"
+    def segment(self, text, updatefunction=None):  #"ReversedLongestMatch"
+        method = self.segmentationMethod
         if method == None:
-            return self.segmentMethodBuiltin(text, updatefunction)
-        else:
-            methods = {}
-            for m in SegmentMethodPlugin.__subclasses__():
-                methods[m.key] = m
-            #print methods
-            cls = methods[method]
-            seg = cls()
-            return seg.segment(self, text, updatefunction)
-
-    def segmentMethodBuiltin(self, text, updatefunction=None):
-        if self.tokenMatchType == 'cjk':
-            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkBopomofo, self.sectionBreakChar))
-        elif self.tokenMatchType == 'cjk_plus_az':
-            tokenPattern = ''.join((CJK.cjkUnifiedIdeographs, CJK.cjkUnifiedIdeographsExtA, CJK.cjkMiddleDot, CJK.cjkKatakanaMiddleDot, CJK.cjkLingZero, CJK.cjkFullwidthLatin, CJK.cjkBopomofo, self.sectionBreakChar))
-        else:
-            #TODO add a self.messages and display it in the log tab
-            #print "Unknown token match type %s" % self.tokenMatchType
-            return None
-
-        notTokenPattern = "[^%s]+" % tokenPattern
-
-        results = SegmenterResults(text=text)
-        idx = 0
-        length = len(text)
-
-        while idx < length:
-            if updatefunction:
-                updatefunction(idx * 100 / length)
-            m = re.match(notTokenPattern, text[idx:])
-            if m:
-                results.addLexical(m.group(0), idx, isCJK=False)
-                idx += len(m.group(0))
-                continue
-            m = re.match(self.sectionBreakPattern, text[idx:])
-            if m:
-                results.addLexical(m.group(0), idx, self.getWord(m.group(0)), isCJK = True)
-                idx += len(m.group(0))
-                
-            else:
-                j = (length - idx) if (idx + 8 > length) else 8
-                while j > 1:
-                    tmpword = text[idx:idx+j]
-                    if self.getWord(tmpword):
-                        results.addLexical(tmpword, idx, self.getWord(tmpword), isCJK=True)
-                        ###results.addWord(tmpword, self.getWord(tmpword))
-                        idx += j
-                        #continue
-                        j = -666 # No *&^*@# labeled loops in Python
-                        continue
-                    j-=1
-
-                if j == 1:
-                    'TODO can this be folded with the loop above?'
-                    tmpword = text[idx:idx+1]
-                    results.addLexical(tmpword, idx, self.getWord(tmpword), isCJK=True)
-                    '''this is an unknown word; i.e., a token with no associated dictionary word'''
-                    idx += 1
-        
-        self.segmentBySentence(results, text)
-        return results
-
-    def loadPlugins(self, pluginFolder):
-        import sys
-        loadedPlugins = []
-        #print pluginFolder
-        if not os.path.exists(pluginFolder):
-            print "Plugin folder does not exist"
-            return loadedPlugins
-        sys.path.insert(0, pluginFolder)
-        #plugins = self.enabledPlugins()
-        print os.listdir(pluginFolder)
-        plugins = [i for i in os.listdir(pluginFolder) if i.endswith(".py") and i != "__init__.py"]
-        plugins.sort()
-        for plugin in plugins:
-            try:
-                nopy = plugin.replace(".py", "")
-                __import__(nopy)
-                #self.addMessage("Plugin %s loaded" % (plugin))
-                loadedPlugins.append(nopy)
-                print "Segmenter plugin %s loaded" % (plugin)
-                
-            except:
-                #print "Error in %s" % plugin
-                print "Plugin %s failed to load: %s" % (plugin, sys.exc_info()[0])
-                import traceback
-                traceback.print_exc()
-
+            from segmenter.plugins import segmentmethod_simple_longest as sm
+            method = sm.SegmentMethodSimpleLongest()
+            self.segmentationMethod = method
+            
+        #print "Segmenter using method %s" % method.name
+        method.setup()
+        return method.segment(self, text, updatefunction)
